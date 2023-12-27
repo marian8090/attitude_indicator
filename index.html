@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accelerometer Line</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+
+<body>
+
+  <button onclick='requestOrientationPermission();'>Request orientation permission</button>
+
+  <canvas id="accelerometerCanvas" width="400" height="200"></canvas>
+
+  <script>
+    // Get the canvas element and 2D context
+    var canvas = document.getElementById('accelerometerCanvas');
+    var context = canvas.getContext('2d');
+
+    function requestOrientationPermission() {
+      DeviceOrientationEvent.requestPermission()
+        .then(response => {
+          alert(response);
+          if (response == 'granted') {
+            window.addEventListener('deviceorientation', (e) => {
+              // do something with e
+            })
+          }
+        })
+        .catch(console.error)
+    }
+
+    var accelerationX = 1;
+
+    // Function to handle the device motion event
+    function handleMotionEvent(event) {
+
+      // Access acceleration values along X, Y, and Z axes
+      accelerationX = event.accelerationIncludingGravity.x;
+      accelerationX = 2;
+
+      render();
+    }
+
+    function render() {
+      console.log("render");
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw a horizontal line based on the X-axis acceleration
+      var lineY = canvas.height / 2; // Center of the canvas vertically
+      var lineLength = 100; // Adjust the line length as needed
+
+      // Draw the line
+      context.beginPath();
+      context.moveTo(0, lineY);
+      context.lineTo(lineLength * accelerationX, lineY);
+      context.strokeStyle = '#000'; // Line color
+      context.lineWidth = 2; // Line width
+      context.stroke();
+      context.closePath();
+
+    }
+
+    //render();
+  </script>
+
+</body>
+
+</html>
