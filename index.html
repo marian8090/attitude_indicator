@@ -14,7 +14,7 @@
 
 <body>
 
-  <button onclick='requestOrientationPermission();'>Test9</button>
+  <button onclick='requestOrientationPermission();'>Test10</button>
 
   <canvas id="accelerometerCanvas" width="400" height="200"></canvas>
 
@@ -30,8 +30,10 @@
           alert(response);
           if (response == 'granted') {
             window.addEventListener('deviceorientation', (e) => {
-              //accelerationX = e.accelerationIncludingGravity.x;
-              accelerationX = Math.random()*3;
+              accelerationX = Math.abs(
+                e.accelerationIncludingGravity.x
+                );
+              accelerationX = Math.random() * 3;
               render();
             })
           }
