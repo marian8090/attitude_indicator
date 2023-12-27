@@ -39,18 +39,6 @@
         .catch(console.error)
     }
 
-    var accelerationX = 1;
-
-    // Function to handle the device motion event
-    function handleMotionEvent(event) {
-
-      // Access acceleration values along X, Y, and Z axes
-      accelerationX = event.accelerationIncludingGravity.x;
-      accelerationX = 2;
-
-      render();
-    }
-
     function render() {
       console.log("render");
       context.clearRect(0, 0, canvas.width, canvas.height);
