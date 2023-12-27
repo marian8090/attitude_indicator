@@ -14,7 +14,7 @@
 
 <body>
 
-  <button onclick='requestOrientationPermission();'>Test11</button>
+  <button onclick='requestOrientationPermission();'>Test12</button>
 
   <canvas id="accelerometerCanvas" width="400" height="200"></canvas>
 
@@ -48,7 +48,9 @@
       var lineLength = 100; // Adjust the line length as needed
 
       ctx.font = "48px serif";
-      ctx.fillText("" + eeeee, 10, 50);
+      if(eeeee!=null){
+        ctx.fillText("" + eeeee, 10, 50);
+      }
 
       // Draw the line
       context.beginPath();
