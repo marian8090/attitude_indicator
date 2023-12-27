@@ -31,7 +31,8 @@
           alert(response);
           if (response == 'granted') {
             window.addEventListener('deviceorientation', (e) => {
-              accelerationX = event.accelerationIncludingGravity.x;
+              //accelerationX = event.accelerationIncludingGravity.x;
+              accelerationX = 3;
               render();
             })
           }
