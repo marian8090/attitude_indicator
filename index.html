@@ -23,13 +23,16 @@
     var canvas = document.getElementById('accelerometerCanvas');
     var context = canvas.getContext('2d');
 
+    var accelerationX = 1;
+
     function requestOrientationPermission() {
       DeviceOrientationEvent.requestPermission()
         .then(response => {
           alert(response);
           if (response == 'granted') {
             window.addEventListener('deviceorientation', (e) => {
-              // do something with e
+              accelerationX = 2;
+              render();
             })
           }
         })
