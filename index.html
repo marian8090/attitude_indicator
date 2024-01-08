@@ -30,7 +30,7 @@
           alert(response);
           if (response == 'granted') {
             window.addEventListener('deviceorientation', (event) => {
-              accelerationX = event.alpha * 3;
+              accelerationX = event.alpha/360 * 6;
             })
           }
         })
