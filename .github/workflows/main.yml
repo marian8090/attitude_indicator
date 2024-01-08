@@ -23,3 +23,10 @@ jobs:
       with:
         path: 'index.html'
         destination: 'github-deploymentaction-attitudeindicator/'
+        headers: |-
+          cache-control: no-cache 
+
+
+
+
+          
