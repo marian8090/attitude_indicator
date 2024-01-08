@@ -23,15 +23,13 @@
     var context = canvas.getContext('2d');
 
     var accelerationX = 1;
-    var eeeee=null;
-
+    
     function requestOrientationPermission() {
       /*DeviceOrientationEvent.requestPermission()
         .then(response => {
           alert(response);
           if (response == 'granted') {
             window.addEventListener('deviceorientation', (e) => {
-              // eeeee = e
               accelerationX = Math.random() * 3;
               render();
             })
@@ -47,11 +45,7 @@
       var lineY = canvas.height / 2; // Center of the canvas vertically
       var lineLength = 100; // Adjust the line length as needed
 
-      ctx.font = "48px serif";
-      if(eeeee!=null){
-        ctx.fillText("" + eeeee, 10, 50);
-      }
-
+  
       // Draw the line
       context.beginPath();
       context.moveTo(0, lineY);
