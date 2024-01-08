@@ -14,7 +14,7 @@
 
 <body>
 
-  <button onclick='requestOrientationPermission();'>Test14</button>
+  <button onclick='requestOrientationPermission();'>Test15</button>
 
   <canvas id="accelerometerCanvas" width="400" height="200"></canvas>
 
@@ -23,19 +23,18 @@
     var context = canvas.getContext('2d');
 
     var accelerationX = 1;
-    
+
     function requestOrientationPermission() {
-      /*DeviceOrientationEvent.requestPermission()
+      DeviceOrientationEvent.requestPermission()
         .then(response => {
           alert(response);
           if (response == 'granted') {
             window.addEventListener('deviceorientation', (e) => {
               accelerationX = Math.random() * 3;
-              render();
             })
           }
         })
-        .catch(console.error)*/
+        .catch(console.error)
     }
 
     function render() {
@@ -45,7 +44,7 @@
       var lineY = canvas.height / 2; // Center of the canvas vertically
       var lineLength = 100; // Adjust the line length as needed
 
-  
+
       // Draw the line
       context.beginPath();
       context.moveTo(0, lineY);
@@ -58,7 +57,7 @@
     }
 
     setInterval(render, 100);
-    
+
     //render();
   </script>
 
