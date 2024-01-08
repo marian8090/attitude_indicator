@@ -22,4 +22,4 @@ jobs:
       uses: 'google-github-actions/upload-cloud-storage@v2'
       with:
         path: 'index.html'
-        destination: 'github-deploymentaction-attitudeindicator/index.html'
+        destination: 'github-deploymentaction-attitudeindicator/'
