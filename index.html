@@ -22,6 +22,8 @@
     var canvas = document.getElementById('accelerometerCanvas'); 
     var context = canvas.getContext('2d');
     var alpha = 1;
+    var beta = 1;
+    var gamma = 1;
 
     function requestOrientationPermission() { 
       DeviceOrientationEvent.requestPermission()
@@ -29,7 +31,9 @@
           alert(response);
           if (response == 'granted') {
             window.addEventListener('deviceorientation', (event) => {
-              alpha = event.alpha/360;  // Lese winkel Alpha aus
+              alpha = event.alpha/360;  // Lese winkel aus
+              beta = event.beta/360;  // Lese winkel aus
+              gamma = event.gamma/360;  // Lese winkel aus
             })
           }
         })
@@ -52,6 +56,21 @@
       context.stroke();
       context.closePath();
 
+      context.beginPath();
+      context.moveTo(lineX, lineY-10); // Linie ab Bildschirmmitte
+      context.lineTo(lineLength * beta * 6, lineY-10); 
+      context.strokeStyle = '#000'; // Line color
+      context.lineWidth = 4; // Line width
+      context.stroke();
+      context.closePath();
+
+      context.beginPath();
+      context.moveTo(lineX, lineY-20); // Linie ab Bildschirmmitte
+      context.lineTo(lineLength * gamma * 6, lineY-20); 
+      context.strokeStyle = '#000'; // Line color
+      context.lineWidth = 4; // Line width
+      context.stroke();
+      context.closePath();
     }
 
     setInterval(render, 100); // Updateintervall
