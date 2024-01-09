@@ -40,11 +40,12 @@
       context.clearRect(0, 0, canvas.width, canvas.height);
 
       // Draw a horizontal line based on the X-axis acceleration
+      var lineX = canvas.width / 2; // Center of the canvas horihontally
       var lineY = canvas.height / 2; // Center of the canvas vertically
       var lineLength = 100; // Adjust the line length as needed
 
       context.beginPath();
-      context.moveTo(200, lineY); // Linie ab Bildschirmmitte
+      context.moveTo(lineX, lineY); // Linie ab Bildschirmmitte
       context.lineTo(lineLength * alpha * 6, lineY); 
       context.strokeStyle = '#000'; // Line color
       context.lineWidth = 4; // Line width
