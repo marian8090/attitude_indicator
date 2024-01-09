@@ -22,16 +22,15 @@
   <script>
     var canvas = document.getElementById('accelerometerCanvas'); 
     var context = canvas.getContext('2d');
+    var alpha = 1;
 
-    var accelerationX = 1;
-
-    function requestOrientationPermission() {
+    function requestOrientationPermission() { 
       DeviceOrientationEvent.requestPermission()
         .then(response => {
           alert(response);
           if (response == 'granted') {
             window.addEventListener('deviceorientation', (event) => {
-              accelerationX = event.alpha/360 * 6;
+              alpha = event.alpha/360 * 6;
             })
           }
         })
@@ -48,10 +47,10 @@
 
       // Draw the line
       context.beginPath();
-      context.moveTo(0, lineY);
-      context.lineTo(lineLength * accelerationX, lineY);
+      context.moveTo(400, lineY);
+      context.lineTo(lineLength * alpha, lineY);
       context.strokeStyle = '#000'; // Line color
-      context.lineWidth = 2; // Line width
+      context.lineWidth = 4; // Line width
       context.stroke();
       context.closePath();
 
