@@ -16,7 +16,7 @@
 
   <button onclick='requestOrientationPermission();'>Test17</button>
 
-    <canvas id="accelerometerCanvas" width="800" height="1400"></canvas>  <!-- iphone 13 resolution: 2532×1170 -->
+    <canvas id="accelerometerCanvas" width="500" height="700"></canvas>  <!-- iphone 13 resolution: 2532×1170 -->
 
 
   <script>
@@ -47,7 +47,7 @@
 
       // Draw the line
       context.beginPath();
-      context.moveTo(400, lineY);
+      context.moveTo(200, lineY); // Linie ab Bildschirmmitte
       context.lineTo(lineLength * alpha, lineY);
       context.strokeStyle = '#000'; // Line color
       context.lineWidth = 4; // Line width
