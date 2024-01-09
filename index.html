@@ -30,7 +30,7 @@
           alert(response);
           if (response == 'granted') {
             window.addEventListener('deviceorientation', (event) => {
-              alpha = event.alpha/360 * 6;
+              alpha = event.alpha/360;  // Lese winkel Alpha aus
             })
           }
         })
@@ -44,11 +44,9 @@
       var lineY = canvas.height / 2; // Center of the canvas vertically
       var lineLength = 100; // Adjust the line length as needed
 
-
-      // Draw the line
       context.beginPath();
       context.moveTo(200, lineY); // Linie ab Bildschirmmitte
-      context.lineTo(lineLength * alpha, lineY);
+      context.lineTo(lineLength * alpha * 6, lineY); 
       context.strokeStyle = '#000'; // Line color
       context.lineWidth = 4; // Line width
       context.stroke();
@@ -56,7 +54,7 @@
 
     }
 
-    setInterval(render, 100);
+    setInterval(render, 100); // Updateintervall
 
     //render();
   </script>
