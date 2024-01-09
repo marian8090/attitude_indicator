@@ -16,10 +16,11 @@
 
   <button onclick='requestOrientationPermission();'>Test17</button>
 
-  <canvas id="accelerometerCanvas" width="400" height="200"></canvas>
+    <canvas id="accelerometerCanvas" width="1100" height="2400"></canvas>  <!-- iphone 13 resolution: 2532×1170 -->
+
 
   <script>
-    var canvas = document.getElementById('accelerometerCanvas');
+    var canvas = document.getElementById('accelerometerCanvas'); 
     var context = canvas.getContext('2d');
 
     var accelerationX = 1;
