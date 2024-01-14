@@ -1,3 +1,5 @@
 .gcloudignore
 .git
 .gitignore
+.github
+gha-creds-*.json
