@@ -21,12 +21,7 @@ jobs:
     - id: 'upload-file'
       uses: 'google-github-actions/upload-cloud-storage@v2'
       with:
-        path: 'index.html'
+        path: './'
         destination: 'github-deploymentaction-attitudeindicator/'
         headers: |-
           cache-control: no-cache 
-
-
-
-
-          
