@@ -3,39 +3,53 @@
 
 <head>
     <script src="https://pixijs.download/release/pixi.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
 </head>
- 
+
 <body>
     <script>
-        let app = new PIXI.Application({ width: 640, height: 360 });
+        let app = new PIXI.Application({
+            autoResize: true,
+            resolution: devicePixelRatio
+        });
         document.body.appendChild(app.view);
 
-        // create a texture from an image path
         const texture = PIXI.Texture.from('https://pixijs.com/assets/p2.jpeg');
-
-        /* create a tiling sprite ...
-         * requires a texture, a width and a height
-         * in WebGL the image size should preferably be a power of two
-         */
-        const tilingSprite = new PIXI.TilingSprite(
+        const pfd = new PIXI.TilingSprite(
             texture,
-            app.screen.width,
-            app.screen.height,
+            100,
+            100,
         );
+        app.stage.addChild(pfd);
 
-        app.stage.addChild(tilingSprite);
+        //const text = new Text('This is a PixiJS text');
+        //app.stage.addChild(text);
 
-        let count = 0;
+        function resize() {
+            app.renderer.resize(window.innerWidth, window.innerHeight);
 
-        app.ticker.add(() => {
-            count += 0.005;
+            pfd.pivot.x = 0;
+            pfd.pivot.y = 0;
 
-            tilingSprite.tileScale.x = 2 + Math.sin(count);
-            tilingSprite.tileScale.y = 2 + Math.cos(count);
+            // console.log(app.screen.height);
 
-            tilingSprite.tilePosition.x += 1;
-            tilingSprite.tilePosition.y += 1;
-        });
+            pfd.position.x = 10;
+            pfd.position.y = 10;
+            pfd.width = 200; // app.screen.width;
+            pfd.height = 200; //app.screen.height/3.0;
+        }
+        window.addEventListener('resize', resize);
+        resize();
 
     </script>
 </body>
