@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://pixijs.download/release/pixi.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        const app = new PIXI.Application({ antialias: true, background: '#000000', resizeTo: window });
+
+        document.body.appendChild(app.view);
+
+        // draw a shape for the PFD sky
+        const skyShape = new PIXI.Graphics();
+        skyShape.beginFill(0x000FF);
+        //skyShape.lineStyle(4, 0xffd900, 1); // no line!
+        skyShape.moveTo(0, 0);
+        skyShape.lineTo(800, 0);
+        skyShape.lineTo(800, 300);
+        skyShape.lineTo(0, 500);
+        skyShape.closePath();
+        skyShape.endFill();
+        app.stage.addChild(skyShape);
+
+        // draw a shape for the PFD ground
+        const groundShape = new PIXI.Graphics();
+        groundShape.beginFill(0x97704f);
+        groundShape.moveTo(0, 500);
+        groundShape.lineTo(800, 300);
+        groundShape.lineTo(800, 800);
+        groundShape.lineTo(0, 800);
+        groundShape.closePath();
+        groundShape.endFill();
+        app.stage.addChild(groundShape);
+
+        // draw PFD Horizont Line
+        const horizLine = new PIXI.Graphics();
+        console.log(screen.availHeight)
+        console.log(screen.availWidth)
+        console.log(screen.colorDepth)
+        horizLine.lineStyle(2, 0xFFFFFF, 1);
+        horizLine.moveTo(0, 500);
+        horizLine.lineTo(800, 300);
+       // horizLine.lineTo(200, 200);
+       // horizLine.lineTo(240, 100);
+        horizLine.position.x = 0; // Linie oben links beginnen 
+        horizLine.position.y = 0;
+        app.stage.addChild(horizLine);
+
+        // draw a shape boresight
+        const boresightShape = new PIXI.Graphics();
+        boresightShape.beginFill(0x000000);
+        boresightShape.lineStyle(2, 0xffffff, 1); 
+        boresightShape.moveTo(400, 400);
+        boresightShape.lineTo(400+150, 400+50);
+        boresightShape.lineTo(400+100, 400+50);
+        boresightShape.lineTo(400, 400);
+        boresightShape.beginFill(0x000000);
+        boresightShape.moveTo(400, 400);
+        boresightShape.lineTo(400-150, 400+50);
+        boresightShape.lineTo(400-100, 400+50);
+        boresightShape.lineTo(400, 400);
+
+        boresightShape.closePath();
+        boresightShape.endFill();
+        app.stage.addChild(boresightShape);
+
+    </script>
+</body>
+
+</html>
