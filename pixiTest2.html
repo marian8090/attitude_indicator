@@ -18,47 +18,40 @@
 
 <body>
     <script>
+        var time = 0; // Simulationszeit NOETIG???
+        var pitch = 5; // pitch angle
+        var roll = 20; // pitch angle
+                
         const app = new PIXI.Application({ antialias: true, background: '#000000', resizeTo: window });
 
         document.body.appendChild(app.view);
 
         // draw a shape for the PFD sky
         const skyShape = new PIXI.Graphics();
-        skyShape.beginFill(0x000FF);
-        //skyShape.lineStyle(4, 0xffd900, 1); // no line!
-        skyShape.moveTo(0, 0);
-        skyShape.lineTo(800, 0);
-        skyShape.lineTo(800, 300);
-        skyShape.lineTo(0, 500);
-        skyShape.closePath();
-        skyShape.endFill();
+        skyShape.beginFill(0x285EF6); 
+        skyShape.drawRect(0, 0, 800, 800);
         app.stage.addChild(skyShape);
 
-        // draw a shape for the PFD ground
-        const groundShape = new PIXI.Graphics();
-        groundShape.beginFill(0x97704f);
-        groundShape.moveTo(0, 500);
-        groundShape.lineTo(800, 300);
-        groundShape.lineTo(800, 800);
-        groundShape.lineTo(0, 800);
-        groundShape.closePath();
-        groundShape.endFill();
-        app.stage.addChild(groundShape);
-
-        // draw PFD Horizont Line
+        // draw Rect + Line for the PFD ground IN CONTAINER
+        var groundShapeContainer = new PIXI.Container();
+        var groundShape = new PIXI.Graphics();
+        groundShape.beginFill(0x916130);
+        groundShape.drawRect(-1000, -1000, 2000, 2000); // grosses quadrat fuer ground
+        groundShapeContainer.addChild(groundShape);
         const horizLine = new PIXI.Graphics();
-        console.log(screen.availHeight)
-        console.log(screen.availWidth)
-        console.log(screen.colorDepth)
-        horizLine.lineStyle(2, 0xFFFFFF, 1);
-        horizLine.moveTo(0, 500);
-        horizLine.lineTo(800, 300);
-       // horizLine.lineTo(200, 200);
-       // horizLine.lineTo(240, 100);
-        horizLine.position.x = 0; // Linie oben links beginnen 
-        horizLine.position.y = 0;
-        app.stage.addChild(horizLine);
-
+        horizLine.lineStyle(2, 0xFFFFFF, 1); // draw PFD Horizont Line
+        horizLine.moveTo(-1000, -1000);
+        horizLine.lineTo(2000, -1000);
+        for (i = -3; i < 4; i++) {        
+        horizLine.moveTo(-50, -i*50-1000); horizLine.lineTo(50, -i*50-1000);
+        }
+        groundShapeContainer.addChild(horizLine);
+        groundShapeContainer.position.set(400, 400 + pitch*10); // positioningung unter boresight +- pitch
+        groundShapeContainer.pivot.x = 0; 
+        groundShapeContainer.pivot.y = -1000; // Angelpunkt an Oberseite = boresight
+        groundShapeContainer.rotation = -roll/180*Math.PI;
+        app.stage.addChild(groundShapeContainer);
+        
         // draw a shape boresight
         const boresightShape = new PIXI.Graphics();
         boresightShape.beginFill(0x000000);
@@ -72,10 +65,18 @@
         boresightShape.lineTo(400-150, 400+50);
         boresightShape.lineTo(400-100, 400+50);
         boresightShape.lineTo(400, 400);
-
         boresightShape.closePath();
         boresightShape.endFill();
         app.stage.addChild(boresightShape);
+
+
+        // Listen for animate update
+        app.ticker.add((delta) =>
+        {   time += delta/60;
+            // console.log(time);
+            groundShapeContainer.rotation = Math.sin(time/3) /2; // Fake bank angle
+            groundShapeContainer.position.set(400, 400 + pitch*10*Math.sin(time/5) ); // positioningung unter boresight +- pitch
+        });
 
     </script>
 </body>

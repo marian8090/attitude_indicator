@@ -18,38 +18,64 @@
 
 <body>
     <script>
-        let app = new PIXI.Application({
-            autoResize: true,
-            resolution: devicePixelRatio
+        var app = new PIXI.Application(400, 400, {
+            antialias: true
         });
         document.body.appendChild(app.view);
 
-        const texture = PIXI.Texture.from('https://pixijs.com/assets/p2.jpeg');
-        const pfd = new PIXI.TilingSprite(
-            texture,
-            100,
-            100,
-        );
-        app.stage.addChild(pfd);
+        // Render the compass
+        var compassContainer = new PIXI.Container();
 
-        //const text = new Text('This is a PixiJS text');
-        //app.stage.addChild(text);
+        var compass = new PIXI.Graphics();
 
-        function resize() {
-            app.renderer.resize(window.innerWidth, window.innerHeight);
+        compass.beginFill(0xFF3300);
+        compass.lineStyle(4, 0xffd900, 1);
 
-            pfd.pivot.x = 0;
-            pfd.pivot.y = 0;
+        compass.lineStyle(0);
+        compass.beginFill(0xFFFF0B, 0.5);
+        compass.drawCircle(200, 200, 180);
+        compass.endFill();
 
-            // console.log(app.screen.height);
+        compass.lineStyle(0);
+        compass.beginFill(0xFFFFFF, 1);
+        compass.drawCircle(200, 200, 150);
+        compass.endFill();
 
-            pfd.position.x = 10;
-            pfd.position.y = 10;
-            pfd.width = 200; // app.screen.width;
-            pfd.height = 200; //app.screen.height/3.0;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+        compass.lineStyle(4, 0xFF0000, 1);
+        compass.moveTo(200, 20);
+        compass.lineTo(200, 40);
+
+        compassContainer.addChild(compass);
+
+        app.stage.addChild(compassContainer);
+
+
+        // Render the boat
+        var boat = new PIXI.Graphics();
+
+        boat.beginFill(0xFF3300);
+        boat.lineStyle(4, 0xffd900, 1);
+
+        boat.moveTo(200, 100);
+        boat.lineTo(175, 250);
+        boat.lineTo(225, 250);
+        boat.lineTo(200, 100);
+        boat.endFill();
+
+        // Add boat
+        app.stage.addChild(boat);
+
+        compassContainer.position.set(200, 200);
+        compassContainer.pivot.x = compassContainer.width / 2;
+        compassContainer.pivot.y = compassContainer.height / 2;
+
+        app.ticker.add(function (delta) {
+            // rotate the container!
+            // use delta to create frame-independent tranform
+            compassContainer.rotation -= 0.01 * delta;
+        });
+        // Rotate compass
+
 
     </script>
 </body>
