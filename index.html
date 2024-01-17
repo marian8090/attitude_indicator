@@ -17,25 +17,26 @@
   <a href="pixiTest.html">pixiTest.html</a><br> <!-- Link zu HTML test file-->
   <a href="pixiTest2.html">pixiTest2.html</a><br> <!-- Link zu HTML test file-->
 
-  <button onclick='requestOrientationPermission();'>Test20</button>  <!-- Button fuer request persmission fuer Beschleunigungsdaten -->
-    <canvas id="accelerometerCanvas" width="500" height="700"></canvas>  <!-- iphone 13 resolution: 2532×1170 -->
+  <button onclick='requestOrientationPermission();'>Test20</button>
+  <!-- Button fuer request persmission fuer Beschleunigungsdaten -->
+  <canvas id="accelerometerCanvas" width="500" height="700"></canvas> <!-- iphone 13 resolution: 2532×1170 -->
 
   <script>
-    var canvas = document.getElementById('accelerometerCanvas'); 
+    var canvas = document.getElementById('accelerometerCanvas');
     var context = canvas.getContext('2d');
     var alpha = 1;
     var beta = 1;
     var gamma = 1;
 
-    function requestOrientationPermission() { 
+    function requestOrientationPermission() {
       DeviceOrientationEvent.requestPermission()
         .then(response => {
           alert(response);
           if (response == 'granted') {
             window.addEventListener('deviceorientation', (event) => {
-              alpha = event.alpha/360;  // Lese winkel aus
-              beta = event.beta/360;  // Lese winkel aus
-              gamma = event.gamma/360;  // Lese winkel aus
+              alpha = event.alpha / 360;  // Lese winkel aus
+              beta = event.beta / 360;  // Lese winkel aus
+              gamma = event.gamma / 360;  // Lese winkel aus
             })
           }
         })
@@ -52,23 +53,23 @@
 
       context.beginPath();
       context.moveTo(lineX, lineY); // Linie ab Bildschirmmitte
-      context.lineTo(lineLength * alpha * 6, lineY); 
+      context.lineTo(lineLength * alpha * 6, lineY);
       context.strokeStyle = '#000'; // Line color
       context.lineWidth = 4; // Line width
       context.stroke();
       context.closePath();
 
       context.beginPath();
-      context.moveTo(lineX, lineY-10); // Linie ab Bildschirmmitte
-      context.lineTo(lineLength * beta * 6, lineY-10); 
+      context.moveTo(lineX, lineY - 10); // Linie ab Bildschirmmitte
+      context.lineTo(lineLength * beta * 6, lineY - 10);
       context.strokeStyle = '#000'; // Line color
       context.lineWidth = 4; // Line width
       context.stroke();
       context.closePath();
 
       context.beginPath();
-      context.moveTo(lineX, lineY-20); // Linie ab Bildschirmmitte
-      context.lineTo(lineLength * gamma * 6, lineY-20); 
+      context.moveTo(lineX, lineY - 20); // Linie ab Bildschirmmitte
+      context.lineTo(lineLength * gamma * 6, lineY - 20);
       context.strokeStyle = '#000'; // Line color
       context.lineWidth = 4; // Line width
       context.stroke();
@@ -77,11 +78,8 @@
 
     setInterval(render, 100); // Updateintervall
 
-</script>
+  </script>
 
 </body>
 
 </html>
-
-
-

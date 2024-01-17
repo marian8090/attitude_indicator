@@ -18,64 +18,57 @@
 
 <body>
     <script>
-        var app = new PIXI.Application(400, 400, {
-            antialias: true
-        });
+        // Create the application helper and add its render target to the page
+        let app = new PIXI.Application({ width: 640, height: 360 });
         document.body.appendChild(app.view);
 
-        // Render the compass
-        var compassContainer = new PIXI.Container();
+        // Create window frame
+        let frame = new PIXI.Graphics();
+        frame.beginFill(0x666666);
+        frame.lineStyle({ color: 0xffffff, width: 4, alignment: 0 });
+        frame.drawRect(0, 0, 208, 208);
+        frame.position.set(320 - 104, 180 - 104);
+        app.stage.addChild(frame);
 
-        var compass = new PIXI.Graphics();
+        // Create a graphics object to define our mask
+        let mask = new PIXI.Graphics();
+        // Add the rectangular area to show
+        mask.beginFill(0xffffff);
+        mask.drawRect(0, 0, 200, 200);
+        mask.endFill();
 
-        compass.beginFill(0xFF3300);
-        compass.lineStyle(4, 0xffd900, 1);
+        // Add container that will hold our masked content
+        let maskContainer = new PIXI.Container();
+        // Set the mask to use our graphics object from above
+        maskContainer.mask = mask;
+        // Add the mask as a child, so that the mask is positioned relative to its parent
+        maskContainer.addChild(mask);
+        // Offset by the window's frame width
+        maskContainer.position.set(4, 4);
+        // And add the container to the window!
+        frame.addChild(maskContainer);
 
-        compass.lineStyle(0);
-        compass.beginFill(0xFFFF0B, 0.5);
-        compass.drawCircle(200, 200, 180);
-        compass.endFill();
+        // Create contents for the masked container
+        let text = new PIXI.Text(
+            'This text will scroll up and be masked, so you can see how masking works.  Lorem ipsum and all that.\n\n' +
+            'You can put anything in the container and it will be masked!',
+            {
+                fontSize: 24,
+                fill: 0x1010ff,
+                wordWrap: true,
+                wordWrapWidth: 180
+            }
+        );
+        text.x = 10;
+        maskContainer.addChild(text);
 
-        compass.lineStyle(0);
-        compass.beginFill(0xFFFFFF, 1);
-        compass.drawCircle(200, 200, 150);
-        compass.endFill();
-
-        compass.lineStyle(4, 0xFF0000, 1);
-        compass.moveTo(200, 20);
-        compass.lineTo(200, 40);
-
-        compassContainer.addChild(compass);
-
-        app.stage.addChild(compassContainer);
-
-
-        // Render the boat
-        var boat = new PIXI.Graphics();
-
-        boat.beginFill(0xFF3300);
-        boat.lineStyle(4, 0xffd900, 1);
-
-        boat.moveTo(200, 100);
-        boat.lineTo(175, 250);
-        boat.lineTo(225, 250);
-        boat.lineTo(200, 100);
-        boat.endFill();
-
-        // Add boat
-        app.stage.addChild(boat);
-
-        compassContainer.position.set(200, 200);
-        compassContainer.pivot.x = compassContainer.width / 2;
-        compassContainer.pivot.y = compassContainer.height / 2;
-
-        app.ticker.add(function (delta) {
-            // rotate the container!
-            // use delta to create frame-independent tranform
-            compassContainer.rotation -= 0.01 * delta;
+        // Add a ticker callback to scroll the text up and down
+        let elapsed = 0.0;
+        app.ticker.add((delta) => {
+            // Update the text's y coordinate to scroll it
+            elapsed += delta;
+            text.y = 10 + -100.0 + Math.cos(elapsed / 50.0) * 100.0;
         });
-        // Rotate compass
-
 
     </script>
 </body>
