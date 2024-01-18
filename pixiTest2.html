@@ -14,14 +14,14 @@
             display: block;
         }
     </style>
+    <script src="pfd.js"></script>
+    
 </head>
 
 <body>
     <script>
-        var time = 0; // Simulationszeit NOETIG???
-        var pitch = 5; // pitch angle
-        var roll = 20; // pitch angle
-                
+        pfd();
+
         const app = new PIXI.Application({ antialias: true, background: '#000000', resizeTo: window });
 
         document.body.appendChild(app.view);
@@ -46,10 +46,10 @@
         horizLine.moveTo(-50, -i*50-1000); horizLine.lineTo(50, -i*50-1000);
         }
         groundShapeContainer.addChild(horizLine);
-        groundShapeContainer.position.set(400, 400 + pitch*10); // positioningung unter boresight +- pitch
+        groundShapeContainer.position.set(400, 400); // positioningung unter boresight (spaeter +- pitch)
         groundShapeContainer.pivot.x = 0; 
         groundShapeContainer.pivot.y = -1000; // Angelpunkt an Oberseite = boresight
-        groundShapeContainer.rotation = -roll/180*Math.PI;
+        groundShapeContainer.rotation = 0; // spaeter roll (bank angle)
         app.stage.addChild(groundShapeContainer);
 
         const groundShapeMask = new PIXI.Graphics(); // Create a rectangular mark for the groundShape
@@ -76,45 +76,38 @@
         boresightShape.endFill();
         app.stage.addChild(boresightShape);
 
-        // BASIC TEXT
-        const basicText = new PIXI.Text('120');
-        basicText.x = 50;
-        basicText.y = 400;
-        app.stage.addChild(basicText);
-        
-        // RICH TEXT
-        const style = new PIXI.TextStyle({
-        fontFamily: 'Arial',
+        // PFD text for IAS, ALT
+        const airspeedTextStyle = new PIXI.TextStyle({
+        fill: "#00ff00",
+        fontFamily: "\"Courier New\", Courier, monospace",
         fontSize: 36,
-        fontStyle: 'italic',
-        fontWeight: 'bold',
-        fill: ['#ffffff', '#00ff99'], // gradient
-        stroke: '#4a1850',
-        strokeThickness: 5,
-        dropShadow: true,
-        dropShadowColor: '#000000',
-        dropShadowBlur: 4,
-        dropShadowAngle: Math.PI / 6,
-        dropShadowDistance: 6,
-        wordWrap: true,
-        wordWrapWidth: 440,
-        lineJoin: 'round',
-        }); 
-
-        const richText = new PIXI.Text('BLABLA', style);
-        richText.x = 50;
-        richText.y = 220;
-        app.stage.addChild(richText);
-
-
+        fontWeight: "bold"
+        });
+        const airspeedText = new PIXI.Text('124', airspeedTextStyle);
+        airspeedText.x = 50;
+        airspeedText.y = 380;
+        app.stage.addChild(airspeedText);
+        const altitudeText = new PIXI.Text('3000', airspeedTextStyle);
+        altitudeText.x = 675;
+        altitudeText.y = 380;
+        app.stage.addChild(altitudeText);
 
 
         // Listen for animate update
+        var time = 0; // Simulationszeit NOETIG???
+        var pitch = 5; // pitch angle
+        var roll = 20; // pitch angle
+     
         app.ticker.add((delta) =>
         {   time += delta/60;
             // console.log(time);
-            groundShapeContainer.rotation = Math.sin(time/3) /2; // Fake bank angle
-            groundShapeContainer.position.set(400, 400 + pitch*10*Math.sin(time/5) ); // positioningung unter boresight +- pitch
+            pitch = 10*Math.sin(time/5) // Fake pitch angle   
+            groundShapeContainer.position.set(400, 400 + pitch*10); // positioningung unter boresight +- pitch
+            roll = Math.sin(time/3) /2; // Fake bank angle          
+            groundShapeContainer.rotation = roll;
+        
+            //groundShapeContainer.rotation = Math.sin(time/3) /2; // Fake bank angle
+            //groundShapeContainer.set(400, 400 + pitch*10*Math.sin(time/5) ); // positioningung unter boresight +- pitch
         });
 
     </script>
