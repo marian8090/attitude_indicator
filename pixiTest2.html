@@ -59,8 +59,6 @@
         app.stage.addChild(groundShapeMask);
         groundShapeContainer.mask = groundShapeMask; // apply mask to the groundShapeContainer
 
-        
-                
         // draw a boresight shape
         const boresightShape = new PIXI.Graphics();
         boresightShape.beginFill(0x000000);
@@ -77,6 +75,38 @@
         boresightShape.closePath();
         boresightShape.endFill();
         app.stage.addChild(boresightShape);
+
+        // BASIC TEXT
+        const basicText = new PIXI.Text('120');
+        basicText.x = 50;
+        basicText.y = 400;
+        app.stage.addChild(basicText);
+        
+        // RICH TEXT
+        const style = new PIXI.TextStyle({
+        fontFamily: 'Arial',
+        fontSize: 36,
+        fontStyle: 'italic',
+        fontWeight: 'bold',
+        fill: ['#ffffff', '#00ff99'], // gradient
+        stroke: '#4a1850',
+        strokeThickness: 5,
+        dropShadow: true,
+        dropShadowColor: '#000000',
+        dropShadowBlur: 4,
+        dropShadowAngle: Math.PI / 6,
+        dropShadowDistance: 6,
+        wordWrap: true,
+        wordWrapWidth: 440,
+        lineJoin: 'round',
+        }); 
+
+        const richText = new PIXI.Text('BLABLA', style);
+        richText.x = 50;
+        richText.y = 220;
+        app.stage.addChild(richText);
+
+
 
 
         // Listen for animate update
