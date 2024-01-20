@@ -36,9 +36,9 @@
             alert(response);
             if (response == 'granted') {
                 window.addEventListener('deviceorientation', (event) => {
-                alpha = event.alpha * 360;  // Lese winkel aus
-                beta = event.beta * 360;  // Lese winkel aus
-                gamma = event.gamma * 360;  // Lese winkel aus
+                alpha = event.alpha;  // Lese winkel aus
+                beta = event.beta;  // Lese winkel aus
+                gamma = event.gamma;  // Lese winkel aus
                 })
             }
             })
