@@ -151,12 +151,12 @@
                 pitch = beta - 45; // 45grd schraeges phone entspricht Pitch=0
                 groundShapeContainer.position.set(400, 400 + pitch*5); // positioningung unter boresight +- pitch
                 roll = gamma; 
-                groundShapeContainer.rotation = roll/180*Math.PI; 
+                groundShapeContainer.rotation = -roll/180*Math.PI; 
            } else {
                 pitch = 10*Math.sin(time/5) // Fake pitch angle   
                 groundShapeContainer.position.set(400, 400 + pitch*10); // positioningung unter boresight +- pitch
                 roll = Math.sin(time/3) /2; // Fake bank angle          
-                groundShapeContainer.rotation = -roll; 
+                groundShapeContainer.rotation = roll; 
             }   
             
             alphaText.text = alpha.toFixed(2); // update Text output for orientation angle\
