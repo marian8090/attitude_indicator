@@ -36,9 +36,9 @@
             alert(response);
             if (response == 'granted') {
                 window.addEventListener('deviceorientation', (event) => {
-                alpha = event.alpha / 360;  // Lese winkel aus
-                beta = event.beta / 360;  // Lese winkel aus
-                gamma = event.gamma / 360;  // Lese winkel aus
+                alpha = event.alpha * 360;  // Lese winkel aus
+                beta = event.beta * 360;  // Lese winkel aus
+                gamma = event.gamma * 360;  // Lese winkel aus
                 })
             }
             })
@@ -150,9 +150,9 @@
             roll = Math.sin(time/3) /2; // Fake bank angle          
             groundShapeContainer.rotation = roll;
         
-            alphaText.text = alpha.toFixed(3); // update Text output for orientation angle\
-            betaText.text = beta.toFixed(3); // update Text output for orientation angle
-            gammaText.text = gamma.toFixed(3); // update Text output for orientation angle
+            alphaText.text = alpha.toFixed(2); // update Text output for orientation angle\
+            betaText.text = beta.toFixed(2); // update Text output for orientation angle
+            gammaText.text = gamma.toFixed(2); // update Text output for orientation angle
 
 
         });
