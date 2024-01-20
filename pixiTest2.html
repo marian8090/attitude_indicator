@@ -106,6 +106,7 @@
         fontWeight: "bold"
         });
         const airspeedText = new PIXI.Text('124', airspeedTextStyle);
+        airspeedText.text = '12345'; // TEST TEXT UPDATE
         airspeedText.x = 50;
         airspeedText.y = 380;
         app.stage.addChild(airspeedText);
@@ -149,9 +150,9 @@
             roll = Math.sin(time/3) /2; // Fake bank angle          
             groundShapeContainer.rotation = roll;
         
-            alphaText.Text = alpha; // update Text output for orientation angle\
-            betaText.Text = beta; // update Text output for orientation angle
-            gammaText.Text = gamma; // update Text output for orientation angle
+            alphaText.text = alpha; // update Text output for orientation angle\
+            betaText.text = beta; // update Text output for orientation angle
+            gammaText.text = gamma; // update Text output for orientation angle
 
 
         });
