@@ -146,7 +146,7 @@
             // simple airspeed and altitude calc
             airspeed = 120 - pitch*2; // je 10grd pitch down +20 kts airspeed
             airspeedText.text = airspeed.toFixed(0);
-            altitude = altitude + airspeed * Math.tan(pitch/180*Math.PI) * delta/60/60;
+            altitude = altitude + airspeed * Math.tan(pitch/180*Math.PI) * delta/60;
             // altitude = altitude + (pitch * delta/60 / 1000); // hand tuned (incorrect!) fake climb or descend
             altitudeText.text = altitude.toFixed(0);
             
