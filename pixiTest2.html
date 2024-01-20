@@ -128,11 +128,11 @@
         alphaText.y = 750;
         app.stage.addChild(alphaText);
         const betaText = new PIXI.Text(beta, orientationTextStyle);
-        betaText.x = 150;
+        betaText.x = 300;
         betaText.y = 750;
         app.stage.addChild(betaText);
         const gammaText = new PIXI.Text(gamma, orientationTextStyle);
-        gammaText.x = 250;
+        gammaText.x = 550;
         gammaText.y = 750;
         app.stage.addChild(gammaText);
 
@@ -150,9 +150,9 @@
             roll = Math.sin(time/3) /2; // Fake bank angle          
             groundShapeContainer.rotation = roll;
         
-            alphaText.text = alpha; // update Text output for orientation angle\
-            betaText.text = beta; // update Text output for orientation angle
-            gammaText.text = gamma; // update Text output for orientation angle
+            alphaText.text = alpha.toFixed(3); // update Text output for orientation angle\
+            betaText.text = beta.toFixed(3); // update Text output for orientation angle
+            gammaText.text = gamma.toFixed(3); // update Text output for orientation angle
 
 
         });
