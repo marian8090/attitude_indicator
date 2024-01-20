@@ -31,6 +31,10 @@
         var gamma = 888;  // Device orientation angle GAMMA
         orientationPermissionGranted = 0; // Flag for Device orientation permision granted
 
+        indicatedAirspeed = 120; // indicated airspeed initial value
+        altitude = 3000; // altitude initial value 
+
+
         function requestOrientationPermission() { // Device orientierung lesen
         DeviceOrientationEvent.requestPermission()
             .then(response => {
@@ -100,23 +104,19 @@
         boresightShape.endFill();
         app.stage.addChild(boresightShape);
 
-        // PFD text for IAS, ALT
+        // PFD text for indicatedAirspeed und altitude
         const airspeedTextStyle = new PIXI.TextStyle({
         fill: "#00ff00",
         fontFamily: "\"Courier New\", Courier, monospace",
         fontSize: 36,
         fontWeight: "bold"
         });
-        const airspeedText = new PIXI.Text('124', airspeedTextStyle);
-        airspeedText.text = '12345'; // TEST TEXT UPDATE
-        airspeedText.x = 50;
-        airspeedText.y = 380;
+        const airspeedText = new PIXI.Text(indicatedAirspeed.toFixed(0), airspeedTextStyle);
+        airspeedText.x = 50;    airspeedText.y = 380;
         app.stage.addChild(airspeedText);
         const altitudeText = new PIXI.Text('3000', airspeedTextStyle);
-        altitudeText.x = 675;
-        altitudeText.y = 380;
+        altitudeText.x = 675;   altitudeText.y = 380;
         app.stage.addChild(altitudeText);
-
 
         // Device orientierung als text ausgeben
         const orientationTextStyle = new PIXI.TextStyle({
@@ -126,16 +126,13 @@
         fontWeight: "bold"
         });
         const alphaText = new PIXI.Text(alpha, orientationTextStyle);
-        alphaText.x = 50;
-        alphaText.y = 750;
+        alphaText.x = 50;        alphaText.y = 750;
         app.stage.addChild(alphaText);
         const betaText = new PIXI.Text(beta, orientationTextStyle);
-        betaText.x = 300;
-        betaText.y = 750;
+        betaText.x = 300;        betaText.y = 750;
         app.stage.addChild(betaText);
         const gammaText = new PIXI.Text(gamma, orientationTextStyle);
-        gammaText.x = 550;
-        gammaText.y = 750;
+        gammaText.x = 550;        gammaText.y = 750;
         app.stage.addChild(gammaText);
 
 
@@ -145,7 +142,13 @@
         var roll = 20; // pitch angle
      
         app.ticker.add((delta) =>
-        {   time += delta/60;
+        {   time += delta/60; // Simulationszeitberechnung - haengt offenbar an der framerate (60 Hz???)
+            // simple airspeed and altitude calc
+            airspeed = 120 - pitch*2; // je 10grd pitch down +20 kts airspeed
+            airspeedText.text = airspeed.toFixed(0);
+            altitude = altitude + (pitch * delta/60 / 1000); // hand tuned (incorrect!) fake climb or descend
+            altitudeText.text = altitude.toFixed(0);
+            
             // console.log(time);
             if (orientationPermissionGranted) {
                 pitch = beta - 45; // 45grd schraeges phone entspricht Pitch=0
