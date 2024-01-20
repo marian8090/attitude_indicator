@@ -148,9 +148,9 @@
         {   time += delta/60;
             // console.log(time);
             if (orientationPermissionGranted) {
-                pitch = beta - 45; 
+                pitch = (beta - 45)/180*pi; // 45grd schraeges phone entspricht Pitch=0
                 groundShapeContainer.position.set(400, 400 + pitch*10); // positioningung unter boresight +- pitch
-                roll = gamma; 
+                roll = gamma/180*pi; 
                 groundShapeContainer.rotation = roll; 
            } else {
                 pitch = 10*Math.sin(time/5) // Fake pitch angle   
