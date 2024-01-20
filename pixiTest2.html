@@ -115,8 +115,29 @@
         app.stage.addChild(altitudeText);
 
 
+        // PFD for device orientation angles
+        const orientationTextStyle = new PIXI.TextStyle({
+        fill: "#00ff00",
+        fontFamily: "\"Courier New\", Courier, monospace",
+        fontSize: 36,
+        fontWeight: "bold"
+        });
+        const alphaText = new PIXI.Text(alpha, orientationTextStyle);
+        alphaText.x = 50;
+        alphaText.y = 750;
+        app.stage.addChild(alphaText);
+        const betaText = new PIXI.Text(beta, orientationTextStyle);
+        betaText.x = 150;
+        betaText.y = 750;
+        app.stage.addChild(betaText);
+        const gammaText = new PIXI.Text(gamma, orientationTextStyle);
+        gammaText.x = 250;
+        gammaText.y = 750;
+        app.stage.addChild(gammaText);
+
+
         // Listen for animate update
-        var time = 0; // Simulationszeit NOETIG???
+        var time = 0; // Simulationszeit
         var pitch = 5; // pitch angle
         var roll = 20; // pitch angle
      
