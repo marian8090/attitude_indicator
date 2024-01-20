@@ -18,12 +18,34 @@
     
 </head>
 
+
+
 <body>
+    <button onclick='requestOrientationPermission();'>Test20</button> <!-- Button zum request der permission um die Device orientierung zu lesen -->
+    
     <script>
-        pfd();
+        pfd(); // TEST FUNKTIONSAUFRUF IN ANDERER DATEI
+    
+        var alpha = 1;  // Device orientation angle ALPHA
+        var beta = 1;   // Device orientation angle BETA
+        var gamma = 1;  // Device orientation angle GAMMA
+
+        function requestOrientationPermission() { // Device orientierung lesen
+        DeviceOrientationEvent.requestPermission()
+            .then(response => {
+            alert(response);
+            if (response == 'granted') {
+                window.addEventListener('deviceorientation', (event) => {
+                alpha = event.alpha / 360;  // Lese winkel aus
+                beta = event.beta / 360;  // Lese winkel aus
+                gamma = event.gamma / 360;  // Lese winkel aus
+                })
+            }
+            })
+            .catch(console.error)
+        }
 
         const app = new PIXI.Application({ antialias: true, background: '#000000', resizeTo: window });
-
         document.body.appendChild(app.view);
 
         // draw a shape for the PFD sky
