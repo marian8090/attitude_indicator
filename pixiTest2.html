@@ -115,7 +115,7 @@
         app.stage.addChild(altitudeText);
 
 
-        // PFD for device orientation angles
+        // Device orientierung als text ausgeben
         const orientationTextStyle = new PIXI.TextStyle({
         fill: "#00ff00",
         fontFamily: "\"Courier New\", Courier, monospace",
@@ -149,8 +149,11 @@
             roll = Math.sin(time/3) /2; // Fake bank angle          
             groundShapeContainer.rotation = roll;
         
-            //groundShapeContainer.rotation = Math.sin(time/3) /2; // Fake bank angle
-            //groundShapeContainer.set(400, 400 + pitch*10*Math.sin(time/5) ); // positioningung unter boresight +- pitch
+            alphaText.Text = alpha; // update Text output for orientation angle\
+            betaText.Text = beta; // update Text output for orientation angle
+            gammaText.Text = gamme; // update Text output for orientation angle
+
+
         });
 
     </script>
