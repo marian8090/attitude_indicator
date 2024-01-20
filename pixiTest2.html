@@ -156,7 +156,7 @@
                 pitch = 10*Math.sin(time/5) // Fake pitch angle   
                 groundShapeContainer.position.set(400, 400 + pitch*10); // positioningung unter boresight +- pitch
                 roll = Math.sin(time/3) /2; // Fake bank angle          
-                groundShapeContainer.rotation = roll; 
+                groundShapeContainer.rotation = -roll; 
             }   
             
             alphaText.text = alpha.toFixed(2); // update Text output for orientation angle\
