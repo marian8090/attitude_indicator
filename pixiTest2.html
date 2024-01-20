@@ -29,12 +29,14 @@
         var alpha = 888;  // Device orientation angle ALPHA
         var beta = 888;   // Device orientation angle BETA
         var gamma = 888;  // Device orientation angle GAMMA
+        orientationPermissionGranted = 0; // Flag for Device orientation permision granted
 
         function requestOrientationPermission() { // Device orientierung lesen
         DeviceOrientationEvent.requestPermission()
             .then(response => {
             alert(response);
             if (response == 'granted') {
+                orientationPermissionGranted = 1; 
                 window.addEventListener('deviceorientation', (event) => {
                 alpha = event.alpha;  // Lese winkel aus
                 beta = event.beta;  // Lese winkel aus
@@ -145,11 +147,18 @@
         app.ticker.add((delta) =>
         {   time += delta/60;
             // console.log(time);
-            pitch = 10*Math.sin(time/5) // Fake pitch angle   
-            groundShapeContainer.position.set(400, 400 + pitch*10); // positioningung unter boresight +- pitch
-            roll = Math.sin(time/3) /2; // Fake bank angle          
-            groundShapeContainer.rotation = roll;
-        
+            if (orientationPermissionGranted) {
+                pitch = beta - 45; 
+                groundShapeContainer.position.set(400, 400 + pitch*10); // positioningung unter boresight +- pitch
+                roll = gamma; 
+                groundShapeContainer.rotation = roll; 
+           } else {
+                pitch = 10*Math.sin(time/5) // Fake pitch angle   
+                groundShapeContainer.position.set(400, 400 + pitch*10); // positioningung unter boresight +- pitch
+                roll = Math.sin(time/3) /2; // Fake bank angle          
+                groundShapeContainer.rotation = roll; 
+            }   
+            
             alphaText.text = alpha.toFixed(2); // update Text output for orientation angle\
             betaText.text = beta.toFixed(2); // update Text output for orientation angle
             gammaText.text = gamma.toFixed(2); // update Text output for orientation angle
