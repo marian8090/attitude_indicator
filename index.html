@@ -24,15 +24,18 @@
     <button onclick='requestOrientationPermission();'>Test20</button> <!-- Button zum request der permission um die Device orientierung zu lesen -->
     
     <script>
-        pfd(); // TEST FUNKTIONSAUFRUF IN ANDERER DATEI
-    
+ 
+ 
         var alpha = 0;  // Device orientation angle ALPHA
         var beta = 45;   // Device orientation angle BETA
         var gamma = 0;  // Device orientation angle GAMMA
         orientationPermissionGranted = 0; // Flag for Device orientation permision granted
 
-        indicatedAirspeed = 120; // indicated airspeed initial value
-        altitude = 3000; // altitude initial value 
+        
+        state = {
+          trueAirspeed: 120, // indicated airspeed initial value
+          altitude: 3000 // altitude initial value 
+        }
 
         function requestOrientationPermission() { // Device orientierung lesen
         DeviceOrientationEvent.requestPermission()
@@ -80,12 +83,7 @@
             touchendEvent.preventDefault();
         } );
         
-
-        // draw a shape for the PFD sky
-        const skyShape = new PIXI.Graphics();
-        skyShape.beginFill(0x285EF6); 
-        skyShape.drawRect(0, 0, 800, 800);
-        app.stage.addChild(skyShape);
+        const pfdUpdate = pfdInit(app); // PFD initialisieren und PDF update funktion (per Lambdafunktion) zurueckliefern
 
         // draw Rect + Line for the PFD ground IN CONTAINER
         var groundShapeContainer = new PIXI.Container();
@@ -152,19 +150,7 @@
         boresightShape.endFill();
         app.stage.addChild(boresightShape);
 
-        // PFD text for indicatedAirspeed und altitude
-        const airspeedTextStyle = new PIXI.TextStyle({
-        fill: "#00ff00",
-        fontFamily: "\"Courier New\", Courier, monospace",
-        fontSize: 36,
-        fontWeight: "bold"
-        });
-        const airspeedText = new PIXI.Text(indicatedAirspeed.toFixed(0), airspeedTextStyle);
-        airspeedText.x = 50;    airspeedText.y = 380;
-        app.stage.addChild(airspeedText);
-        const altitudeText = new PIXI.Text('3000', airspeedTextStyle);
-        altitudeText.x = 675;   altitudeText.y = 380;
-        app.stage.addChild(altitudeText);
+
 
         // Device orientierung als text ausgeben
         const orientationTextStyle = new PIXI.TextStyle({
@@ -188,25 +174,25 @@
         var time = 0; // Simulationszeit
         var pitch = 5; // pitch angle
         var roll = 20; // pitch angle
+
+        pfdUpdate(state); // PFD update
+
         // Listen for animate update   
         app.ticker.add((delta) =>
         {   time += delta/60; // Simulationszeitberechnung - haengt offenbar an der framerate (60 Hz???)
             // simple airspeed and altitude calc
-            airspeed = 120 - pitch*2; // je 10grd pitch down +20 kts airspeed
-            airspeedText.text = airspeed.toFixed(0);
-            altitude = altitude + airspeed * Math.tan(pitch/180*Math.PI) * delta/60;
-            // altitude = altitude + (pitch * delta/60 / 1000); // hand tuned (incorrect!) fake climb or descend
-            altitudeText.text = altitude.toFixed(0);
+            state.trueAirspeed = 120 - pitch*2; // je 10grd pitch down +20 kts airspeed
+            state.altitude = state.altitude + state.trueAirspeed * Math.tan(pitch/180*Math.PI) * delta/60;
             
             if (orientationPermissionGranted || touchControlActive) {
                 pitch = beta - 45; // 45grd schraeges phone entspricht Pitch=0
-                groundShapeContainer.position.set(400, 400 + pitch*5); // positioningung unter boresight +- pitch
                 roll = gamma; 
+                groundShapeContainer.position.set(400, 400 + pitch*5); // positioningung unter boresight +- pitch
                 groundShapeContainer.rotation = -roll/180*Math.PI; 
            } else {
                 pitch = 10*Math.sin(time/5) // Fake pitch angle   
-                groundShapeContainer.position.set(400, 400 + pitch*10); // positioningung unter boresight +- pitch
                 roll = Math.sin(time/3) /2; // Fake bank angle          
+                groundShapeContainer.position.set(400, 400 + pitch*10); // positioningung unter boresight +- pitch
                 groundShapeContainer.rotation = roll; 
             }   
             
@@ -214,7 +200,7 @@
             betaText.text = beta.toFixed(2); // update Text output for orientation angle
             gammaText.text = gamma.toFixed(2); // update Text output for orientation angle
 
-
+            pfdUpdate(state); // PFD update
         });
 
     </script>
