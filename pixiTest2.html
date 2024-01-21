@@ -70,9 +70,30 @@
         horizLine.lineStyle(2, 0xFFFFFF, 1); // draw PFD Horizont Line
         horizLine.moveTo(-1000, -1000);
         horizLine.lineTo(2000, -1000);
-        for (i = -3; i < 4; i++) {     // Ladder - 50px entspricht zB 10grd pitch   
-        horizLine.moveTo(-50, -i*50-1000); horizLine.lineTo(50, -i*50-1000);
+        for (pitch = -30; pitch <= 30; pitch+=10) {     // Ladder 10grd marker - 100px entspricht zB 10grd pitch   
+        horizLine.moveTo(-50, pitch*10-1000); horizLine.lineTo(50, pitch*10-1000);
         }
+        for (pitch = -25; pitch <= 25; pitch+=10) {     // Ladder 5grd marker
+        horizLine.moveTo(-25, pitch*10-1000); horizLine.lineTo(25, pitch*10-1000);
+        }
+        for (pitch = -27.5; pitch <= 27.5; pitch+=5) {     // Ladder 2.5grd marker
+        horizLine.moveTo(-12.5, pitch*10-1000); horizLine.lineTo(12.5, pitch*10-1000);
+        }
+
+        // 10deg ladder numbers
+        const ladderTextStyle = new PIXI.TextStyle({
+        fill: "#ffffff",
+        fontFamily: "\"Courier New\", Courier, monospace",
+        fontSize: 24,
+        });
+        for (pitch = -30; pitch <= 30; pitch+=10) {     // Text 10grd marker
+            if (pitch !== 0) {
+                const ladderText = new PIXI.Text(-pitch, ladderTextStyle);
+                ladderText.x = 60;        ladderText.y = pitch*10-1000-24/2;
+                groundShapeContainer.addChild(ladderText);
+            }
+        }
+
         groundShapeContainer.addChild(horizLine);
         groundShapeContainer.position.set(400, 400); // positioningung unter boresight (spaeter +- pitch)
         groundShapeContainer.pivot.x = 0; 
