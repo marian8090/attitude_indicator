@@ -26,14 +26,13 @@
     <script>
         pfd(); // TEST FUNKTIONSAUFRUF IN ANDERER DATEI
     
-        var alpha = 888;  // Device orientation angle ALPHA
-        var beta = 888;   // Device orientation angle BETA
-        var gamma = 888;  // Device orientation angle GAMMA
+        var alpha = 0;  // Device orientation angle ALPHA
+        var beta = 45;   // Device orientation angle BETA
+        var gamma = 0;  // Device orientation angle GAMMA
         orientationPermissionGranted = 0; // Flag for Device orientation permision granted
 
         indicatedAirspeed = 120; // indicated airspeed initial value
         altitude = 3000; // altitude initial value 
-
 
         function requestOrientationPermission() { // Device orientierung lesen
         DeviceOrientationEvent.requestPermission()
@@ -53,6 +52,34 @@
 
         const app = new PIXI.Application({ antialias: true, background: '#000000', resizeTo: window });
         document.body.appendChild(app.view);
+
+        // MOUSE CONTROL
+        var touchControlActive = false;
+        var touchStart = {x: 0, y: 0};
+        
+        app.view.addEventListener("touchstart", (touchstartEvent) => {
+            touchstartEvent.preventDefault();
+            touchControlActive = true; // flag Touchcontrol wird benutzt
+            const touches = touchstartEvent.touches;
+            for (let i = 0; i < touches.length; i++) {
+                touchStart = {x: touches[i].pageX, y: touches[i].pageY}
+            }            
+        } );
+        app.view.addEventListener("touchmove", (touchmoveEvent) => {
+            touchmoveEvent.preventDefault();
+            const touches = touchmoveEvent.changedTouches;
+            for (let i = 0; i < touches.length; i++) {
+                //console.log(touches[i].pageX);
+                //console.log(touches[i].pageY);
+                gamma += (touches[i].pageX - touchStart.x) / 10;
+                beta += (touches[i].pageY - touchStart.y) / 10;
+                touchStart = {x: touches[i].pageX, y: touches[i].pageY}
+            }
+        } );
+        app.view.addEventListener("touchend", (touchendEvent) => {
+            touchendEvent.preventDefault();
+        } );
+        
 
         // draw a shape for the PFD sky
         const skyShape = new PIXI.Graphics();
@@ -157,11 +184,11 @@
         app.stage.addChild(gammaText);
 
 
-        // Listen for animate update
+
         var time = 0; // Simulationszeit
         var pitch = 5; // pitch angle
         var roll = 20; // pitch angle
-     
+        // Listen for animate update   
         app.ticker.add((delta) =>
         {   time += delta/60; // Simulationszeitberechnung - haengt offenbar an der framerate (60 Hz???)
             // simple airspeed and altitude calc
@@ -171,8 +198,7 @@
             // altitude = altitude + (pitch * delta/60 / 1000); // hand tuned (incorrect!) fake climb or descend
             altitudeText.text = altitude.toFixed(0);
             
-            // console.log(time);
-            if (orientationPermissionGranted) {
+            if (orientationPermissionGranted || touchControlActive) {
                 pitch = beta - 45; // 45grd schraeges phone entspricht Pitch=0
                 groundShapeContainer.position.set(400, 400 + pitch*5); // positioningung unter boresight +- pitch
                 roll = gamma; 
