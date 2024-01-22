@@ -15,42 +15,43 @@
         }
     </style>
     <script src="pfd.js"></script>
-    
 </head>
 
 
-
 <body>
-    <button onclick='requestOrientationPermission();'>Test20</button> <!-- Button zum request der permission um die Device orientierung zu lesen -->
-    
+    <button onclick='requestOrientationPermission();'>Test20</button>
+    <!-- Button zum request der permission um die Device orientierung zu lesen -->
+
     <script>
- 
- 
+
+
         var alpha = 0;  // Device orientation angle ALPHA
         var beta = 45;   // Device orientation angle BETA
         var gamma = 0;  // Device orientation angle GAMMA
         orientationPermissionGranted = 0; // Flag for Device orientation permision granted
 
-        state = { // declare all STATE variables here
-          trueAirspeed: 120, // indicated airspeed initial value
-          altitude: 3000 // altitude initial value 
+        state = {               // declare all STATE variables + initial value here
+            trueAirspeed: 120,    // indicated airspeed 
+            altitude: 3000,       // altitude 
+            pitch: 0,             // pitch 
+            roll: 0,              // roll
         }
 
 
         function requestOrientationPermission() { // Device orientierung lesen
-        DeviceOrientationEvent.requestPermission()
-            .then(response => {
-            alert(response);
-            if (response == 'granted') {
-                orientationPermissionGranted = 1; 
-                window.addEventListener('deviceorientation', (event) => {
-                alpha = event.alpha;  // Lese winkel aus
-                beta = event.beta;  // Lese winkel aus
-                gamma = event.gamma;  // Lese winkel aus
+            DeviceOrientationEvent.requestPermission()
+                .then(response => {
+                    alert(response);
+                    if (response == 'granted') {
+                        orientationPermissionGranted = 1;
+                        window.addEventListener('deviceorientation', (event) => {
+                            alpha = event.alpha;  // Lese winkel aus
+                            beta = event.beta;  // Lese winkel aus
+                            gamma = event.gamma;  // Lese winkel aus
+                        })
+                    }
                 })
-            }
-            })
-            .catch(console.error)
+                .catch(console.error)
         }
 
         const app = new PIXI.Application({ antialias: true, background: '#000000', resizeTo: window });
@@ -58,16 +59,16 @@
 
         // MOUSE CONTROL (for Desktop) 
         var touchControlActive = false;
-        var touchStart = {x: 0, y: 0};
-        
+        var touchStart = { x: 0, y: 0 };
+
         app.view.addEventListener("touchstart", (touchstartEvent) => {
             touchstartEvent.preventDefault();
             touchControlActive = true; // flag Touchcontrol wird benutzt
             const touches = touchstartEvent.touches;
             for (let i = 0; i < touches.length; i++) {
-                touchStart = {x: touches[i].pageX, y: touches[i].pageY}
-            }            
-        } );
+                touchStart = { x: touches[i].pageX, y: touches[i].pageY }
+            }
+        });
         app.view.addEventListener("touchmove", (touchmoveEvent) => {
             touchmoveEvent.preventDefault();
             const touches = touchmoveEvent.changedTouches;
@@ -76,100 +77,48 @@
                 //console.log(touches[i].pageY);
                 gamma += (touches[i].pageX - touchStart.x) / 10;
                 beta += (touches[i].pageY - touchStart.y) / 10;
-                touchStart = {x: touches[i].pageX, y: touches[i].pageY}
+                touchStart = { x: touches[i].pageX, y: touches[i].pageY }
             }
-        } );
+        });
         app.view.addEventListener("touchend", (touchendEvent) => {
             touchendEvent.preventDefault();
-        } );
-        
-        const pfdUpdate = pfdInit(app); // PFD initialisieren und PDF update funktion (per Lambdafunktion) zurueckliefern
-
-        // draw Rect + Line for the PFD ground IN CONTAINER
-        var groundShapeContainer = new PIXI.Container();
-        var groundShape = new PIXI.Graphics();
-        groundShape.beginFill(0x916130);
-        groundShape.drawRect(-1000, -1000, 2000, 2000); // grosses quadrat fuer ground
-        groundShapeContainer.addChild(groundShape);
-        const horizLine = new PIXI.Graphics();
-        horizLine.lineStyle(2, 0xFFFFFF, 1); // draw PFD Horizont Line
-        horizLine.moveTo(-1000, -1000);
-        horizLine.lineTo(2000, -1000);
-        for (pitch = -30; pitch <= 30; pitch+=10) {     // Ladder 10grd marker - 100px entspricht zB 10grd pitch   
-        horizLine.moveTo(-50, pitch*10-1000); horizLine.lineTo(50, pitch*10-1000);
-        }
-        for (pitch = -25; pitch <= 25; pitch+=10) {     // Ladder 5grd marker
-        horizLine.moveTo(-25, pitch*10-1000); horizLine.lineTo(25, pitch*10-1000);
-        }
-        for (pitch = -27.5; pitch <= 27.5; pitch+=5) {     // Ladder 2.5grd marker
-        horizLine.moveTo(-12.5, pitch*10-1000); horizLine.lineTo(12.5, pitch*10-1000);
-        }
-
-        // 10deg ladder numbers
-        const ladderTextStyle = new PIXI.TextStyle({
-        fill: "#ffffff",
-        fontFamily: "\"Courier New\", Courier, monospace",
-        fontSize: 24,
         });
-        for (pitch = -30; pitch <= 30; pitch+=10) {     // Text 10grd marker
-            if (pitch !== 0) {
-                const ladderText = new PIXI.Text(-pitch, ladderTextStyle);
-                ladderText.x = 60;        ladderText.y = pitch*10-1000-24/2;
-                groundShapeContainer.addChild(ladderText);
-            }
-        }
 
-        groundShapeContainer.addChild(horizLine);
-        groundShapeContainer.position.set(400, 400); // positioningung unter boresight (spaeter +- pitch)
-        groundShapeContainer.pivot.x = 0; 
-        groundShapeContainer.pivot.y = -1000; // Angelpunkt an Oberseite = boresight
-        groundShapeContainer.rotation = 0; // spaeter roll (bank angle)
-        app.stage.addChild(groundShapeContainer);
-
-        const groundShapeMask = new PIXI.Graphics(); // Create a rectangular mark for the groundShape
-        groundShapeMask.beginFill(0xFFFFFF);
-        groundShapeMask.drawRect(0, 0, 800, 800); // Size for the whole PFD
-        groundShapeMask.endFill();
-        app.stage.addChild(groundShapeMask);
-        groundShapeContainer.mask = groundShapeMask; // apply mask to the groundShapeContainer
+        const pfdUpdate = pfdInit(app); // PFD initialisieren und PDF update funktion (per Lambdafunktion) zurueckliefern
 
         // draw a boresight shape
         const boresightShape = new PIXI.Graphics();
         boresightShape.beginFill(0x000000);
-        boresightShape.lineStyle(2, 0xffffff, 1); 
+        boresightShape.lineStyle(2, 0xffffff, 1);
         boresightShape.moveTo(400, 400);
-        boresightShape.lineTo(400+150, 400+50);
-        boresightShape.lineTo(400+100, 400+50);
+        boresightShape.lineTo(400 + 150, 400 + 50);
+        boresightShape.lineTo(400 + 100, 400 + 50);
         boresightShape.lineTo(400, 400);
         boresightShape.beginFill(0x000000);
         boresightShape.moveTo(400, 400);
-        boresightShape.lineTo(400-150, 400+50);
-        boresightShape.lineTo(400-100, 400+50);
+        boresightShape.lineTo(400 - 150, 400 + 50);
+        boresightShape.lineTo(400 - 100, 400 + 50);
         boresightShape.lineTo(400, 400);
         boresightShape.closePath();
         boresightShape.endFill();
         app.stage.addChild(boresightShape);
 
-
-
         // Device orientierung als text ausgeben
         const orientationTextStyle = new PIXI.TextStyle({
-        fill: "#00ff00",
-        fontFamily: "\"Courier New\", Courier, monospace",
-        fontSize: 36,
-        fontWeight: "bold"
+            fill: "#00ff00",
+            fontFamily: "\"Courier New\", Courier, monospace",
+            fontSize: 36,
+            fontWeight: "bold"
         });
         const alphaText = new PIXI.Text(alpha, orientationTextStyle);
-        alphaText.x = 50;        alphaText.y = 750;
+        alphaText.x = 50; alphaText.y = 750;
         app.stage.addChild(alphaText);
         const betaText = new PIXI.Text(beta, orientationTextStyle);
-        betaText.x = 300;        betaText.y = 750;
+        betaText.x = 300; betaText.y = 750;
         app.stage.addChild(betaText);
         const gammaText = new PIXI.Text(gamma, orientationTextStyle);
-        gammaText.x = 550;        gammaText.y = 750;
+        gammaText.x = 550; gammaText.y = 750;
         app.stage.addChild(gammaText);
-
-
 
         var time = 0; // Simulationszeit
         var pitch = 5; // pitch angle
@@ -178,24 +127,21 @@
         pfdUpdate(state); // PFD update
 
         // Listen for animate update   
-        app.ticker.add((delta) =>
-        {   time += delta/60; // Simulationszeitberechnung - haengt offenbar an der framerate (60 Hz???)
-            // simple airspeed and altitude calc
-            state.trueAirspeed = 120 - pitch*2; // je 10grd pitch down +20 kts airspeed
-            state.altitude = state.altitude + state.trueAirspeed * Math.tan(pitch/180*Math.PI) * delta/60;
-            
-            if (orientationPermissionGranted || touchControlActive) {
-                pitch = beta - 45; // 45grd schraeges phone entspricht Pitch=0
-                roll = gamma; 
-                groundShapeContainer.position.set(400, 400 + pitch*5); // positioningung unter boresight +- pitch
-                groundShapeContainer.rotation = -roll/180*Math.PI; 
-           } else {
-                pitch = 10*Math.sin(time/5) // Fake pitch angle   
-                roll = Math.sin(time/3) /2; // Fake bank angle          
-                groundShapeContainer.position.set(400, 400 + pitch*10); // positioningung unter boresight +- pitch
-                groundShapeContainer.rotation = roll; 
-            }   
-            
+        app.ticker.add((delta) => {
+            time += delta / 60; // Simulationszeitberechnung - haengt offenbar an der framerate (60 Hz???)
+
+            // SIMPLE FLIGHT DYNAMIC FAKE MODEL
+            state.trueAirspeed = 120 - pitch * 2; // je 10grd pitch down +20 kts airspeed
+            state.altitude = state.altitude + state.trueAirspeed * Math.tan(pitch / 180 * Math.PI) * delta / 60;
+
+            if (orientationPermissionGranted || touchControlActive) { // DEVICE ORIENTATION CONTROL
+                state.pitch = beta - 45; // 45grd schraeges phone entspricht Pitch=0
+                state.roll = gamma;
+            } else { // TOUCH CONTROL
+                state.pitch = 10 * Math.sin(time / 5) // Fake pitch angle   
+                state.roll = Math.sin(time / 3) / 2; // Fake bank angle          
+            }
+
             alphaText.text = alpha.toFixed(2); // update Text output for orientation angle\
             betaText.text = beta.toFixed(2); // update Text output for orientation angle
             gammaText.text = gamma.toFixed(2); // update Text output for orientation angle
