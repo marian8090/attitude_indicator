@@ -1,5 +1,8 @@
 function pfdInit(app) {
     // console.log("PFD INIT CALLED!");
+    // var pfdContainer = new PIXI.Container(); // PIXI PFD Container
+    
+
     const skyShape = new PIXI.Graphics();
     skyShape.beginFill(0x285EF6);
     skyShape.drawRect(0, 0, 800, 800);
