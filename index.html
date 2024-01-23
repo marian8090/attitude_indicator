@@ -100,8 +100,8 @@
                 state.pitch = yoke.pitch; // SIMPLE MODE Yoke == state
                 state.roll = yoke.roll;
             } else { // FAKE INPUT
-                state.pitch = 10 * Math.sin(time / 5) // Fake pitch angle   
-                state.roll = Math.sin(time / 3) / 2; // Fake bank angle          
+                state.pitch = 5 * Math.sin(time / 5); // Fake pitch angle   
+                state.roll = 5 * Math.sin(time / 3); // Fake bank angle          
             }
 
             // SIMPLE FLIGHT DYNAMIC FAKE MODEL
