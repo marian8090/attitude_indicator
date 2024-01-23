@@ -24,10 +24,14 @@
 
     <script>
 
-
-        var alpha = 0;  // Device orientation angle ALPHA
-        var beta = 45;   // Device orientation angle BETA
-        var gamma = 0;  // Device orientation angle GAMMA
+        var deviceOrientation = {
+            alpha: 0,  // Device orientation angle ALPHA
+            beta: 45,   // Device orientation angle BETA
+            gamma: 0,  // Device orientation angle GAMMA
+        }
+        //var alpha = 0;  // Device orientation angle ALPHA
+        //var beta = 45;   // Device orientation angle BETA
+        //var gamma = 0;  // Device orientation angle GAMMA
         orientationPermissionGranted = 0; // Flag for Device orientation permision granted
 
         state = {               // declare all STATE variables + initial value here
@@ -45,9 +49,9 @@
                     if (response == 'granted') {
                         orientationPermissionGranted = 1;
                         window.addEventListener('deviceorientation', (event) => {
-                            alpha = event.alpha;  // Lese winkel aus
-                            beta = event.beta;  // Lese winkel aus
-                            gamma = event.gamma;  // Lese winkel aus
+                            deviceOrientation.alpha = event.alpha;  // Lese winkel aus
+                            deviceOrientation.beta = event.beta;  // Lese winkel aus
+                            deviceOrientation.gamma = event.gamma;  // Lese winkel aus
                         })
                     }
                 })
@@ -110,13 +114,13 @@
             fontSize: 36,
             fontWeight: "bold"
         });
-        const alphaText = new PIXI.Text(alpha, orientationTextStyle);
+        const alphaText = new PIXI.Text(deviceOrientation.alpha, orientationTextStyle);
         alphaText.x = 50; alphaText.y = 750;
         app.stage.addChild(alphaText);
-        const betaText = new PIXI.Text(beta, orientationTextStyle);
+        const betaText = new PIXI.Text(deviceOrientation.beta, orientationTextStyle);
         betaText.x = 300; betaText.y = 750;
         app.stage.addChild(betaText);
-        const gammaText = new PIXI.Text(gamma, orientationTextStyle);
+        const gammaText = new PIXI.Text(deviceOrientation.gamma, orientationTextStyle);
         gammaText.x = 550; gammaText.y = 750;
         app.stage.addChild(gammaText);
 
@@ -135,16 +139,16 @@
             state.altitude = state.altitude + state.trueAirspeed * Math.tan(pitch / 180 * Math.PI) * delta / 60;
 
             if (orientationPermissionGranted || touchControlActive) { // DEVICE ORIENTATION CONTROL
-                state.pitch = beta - 45; // 45grd schraeges phone entspricht Pitch=0
-                state.roll = gamma;
+                state.pitch = deviceOrientation.beta - 45; // 45grd schraeges phone entspricht Pitch=0
+                state.roll = deviceOrientation.gamma;
             } else { // TOUCH CONTROL
                 state.pitch = 10 * Math.sin(time / 5) // Fake pitch angle   
                 state.roll = Math.sin(time / 3) / 2; // Fake bank angle          
             }
 
-            alphaText.text = alpha.toFixed(2); // update Text output for orientation angle\
-            betaText.text = beta.toFixed(2); // update Text output for orientation angle
-            gammaText.text = gamma.toFixed(2); // update Text output for orientation angle
+            alphaText.text = deviceOrientation.alpha.toFixed(2); // update Text output for orientation angle\
+            betaText.text = deviceOrientation.beta.toFixed(2); // update Text output for orientation angle
+            gammaText.text = deviceOrientation.gamma.toFixed(2); // update Text output for orientation angle
 
             pfdUpdate(state); // PFD update
         });
