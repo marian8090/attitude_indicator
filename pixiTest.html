@@ -1,25 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <script src="https://pixijs.download/release/pixi.js"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        canvas {
-            display: block;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="PixiJS App">
+  <link rel="apple-touch-icon" href="path/to/your/app-icon.png">
+  <title>PixiJS Fullscreen Example</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/6.1.4/pixi.min.js"></script>
 </head>
-
 <body>
-    <script>
 
-    </script>
+<script>
+  // Create PixiJS application
+  const app = new PIXI.Application({
+    width: window.innerWidth,
+    height: window.innerHeight,
+    resolution: window.devicePixelRatio || 1,
+    autoDensity: true,
+    backgroundColor: 0xAAAAAA,
+  });
+
+  // Add the Pixi canvas to the body
+  document.body.appendChild(app.view);
+
+  // Handle resizing
+  function handleResize() {
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+
+    // Additional logic for scaling or repositioning game elements
+    // ...
+  }
+
+  window.addEventListener('resize', handleResize);
+
+  // Initial canvas size setup
+  window.addEventListener('load', () => {
+    handleResize();
+    
+    // Your PixiJS application logic goes here
+    const sprite = new PIXI.Sprite.from('path/to/your/image.png');
+    sprite.anchor.set(0.5); // Center the sprite
+    sprite.x = app.screen.width / 2;
+    sprite.y = app.screen.height / 2;
+
+    app.stage.addChild(sprite);
+  });
+</script>
+
 </body>
-
 </html>

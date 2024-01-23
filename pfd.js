@@ -1,13 +1,28 @@
 function pfdInit(app) {
+    pfdWidth = 0.90*app.screen.width; // set PFD width
+    pfdHeight = 0.90*app.screen.width; // set PFD height
+    pfdPosX = 0.5*app.screen.width; // set PFD midpoint position X
+    pfdPosY = 0.5*app.screen.width; // set PFD midpoint position Y
 
     var pfd = new PIXI.Container(); // PIXI PFD Container
 
     const skyShape = new PIXI.Graphics();   // PFD SKY
     skyShape.beginFill(0x285EF6);           // color blue
-    skyShape.drawRect(0, 0, 800, 800);      // blue sky rectangle as background for whole PFD
+    skyShape.drawRect(pfdPosX - pfdWidth/2, pfdPosY - pfdHeight/2, pfdWidth, pfdHeight);      // blue sky rectangle as background for whole PFD
+    //skyShape.drawRect(0, 0,800, 800);      // blue sky rectangle as background for whole PFD
     pfd.addChild(skyShape);                 // add sky to PFD container
 
-    // draw Rect + Line for the PFD ground IN SUB-CONTAINER
+    // Get the screen height and width in logical pixels
+    // console.log(app.screen.width);
+    // console.log(app.screen.height);
+    // console.log(app.renderer.width);
+    // console.log(app.renderer.height);
+    // console.log(window.innerWidth);
+    // console.log(window.innerHeight);
+    // console.log(window.devicePixelRatio);
+
+
+    // draw Rect + Line + Ladder for the PFD ground IN SUB-CONTAINER
     var groundShapeContainer = new PIXI.Container();
     var groundShape = new PIXI.Graphics();
     groundShape.beginFill(0x916130);
@@ -50,7 +65,7 @@ function pfdInit(app) {
    
     const groundShapeMask = new PIXI.Graphics(); // Create a rectangular mark for the groundShape
     groundShapeMask.beginFill(0xFFFFFF);
-    groundShapeMask.drawRect(0, 0, 800, 800); // Size for the whole PFD
+    groundShapeMask.drawRect(pfdPosX - pfdWidth/2, pfdPosY - pfdHeight/2, pfdWidth, pfdHeight); // Size for the whole PFD
     groundShapeMask.endFill();
     pfd.addChild(groundShapeMask);// add groundShapeMask to PFD container
     groundShapeContainer.mask = groundShapeMask; // apply mask to the groundShapeContainer
@@ -59,15 +74,15 @@ function pfdInit(app) {
     const boresightShape = new PIXI.Graphics();
     boresightShape.beginFill(0x000000);
     boresightShape.lineStyle(2, 0xffffff, 1);
-    boresightShape.moveTo(400, 400);
-    boresightShape.lineTo(400 + 150, 400 + 50);
-    boresightShape.lineTo(400 + 100, 400 + 50);
-    boresightShape.lineTo(400, 400);
+    boresightShape.moveTo(pfdPosX, pfdPosY);
+    boresightShape.lineTo(pfdPosX + 150, pfdPosY + 50);
+    boresightShape.lineTo(pfdPosX + 100, pfdPosY + 50);
+    boresightShape.lineTo(pfdPosX, pfdPosY);
     boresightShape.beginFill(0x000000);
-    boresightShape.moveTo(400, 400);
-    boresightShape.lineTo(400 - 150, 400 + 50);
-    boresightShape.lineTo(400 - 100, 400 + 50);
-    boresightShape.lineTo(400, 400);
+    boresightShape.moveTo(pfdPosX, pfdPosY);
+    boresightShape.lineTo(pfdPosX - 150, pfdPosY + 50);
+    boresightShape.lineTo(pfdPosX - 100, pfdPosY + 50);
+    boresightShape.lineTo(pfdPosX, pfdPosY);
     boresightShape.closePath();
     boresightShape.endFill();
     pfd.addChild(boresightShape);// add boresightShape to PFD container
@@ -80,10 +95,10 @@ function pfdInit(app) {
         fontWeight: "bold"
     });
     const airspeedText = new PIXI.Text('---', airspeedTextStyle);
-    airspeedText.x = 50; airspeedText.y = 380;
+    airspeedText.x = pfdPosX - pfdWidth/2 + 50; airspeedText.y = pfdPosY - 20;
     pfd.addChild(airspeedText);     // add airspeedText to PFD container
     const altitudeText = new PIXI.Text('---', airspeedTextStyle);
-    altitudeText.x = 675; altitudeText.y = 380;
+    altitudeText.x = pfdPosX + pfdWidth/2 - 150; altitudeText.y = pfdPosY - 20;
     pfd.addChild(altitudeText);     // add altitudeText to PFD container
     
     app.stage.addChild(pfd); // add PFD to stage
@@ -91,7 +106,7 @@ function pfdInit(app) {
     return function (state) {
         airspeedText.text = state.trueAirspeed.toFixed(0);
         altitudeText.text = state.altitude.toFixed(0);
-        groundShapeContainer.position.set(400, 400 + state.pitch*5); // positioningung unter boresight +- pitch
+        groundShapeContainer.position.set(pfdPosX, pfdPosY + state.pitch*5); // positioningung unter boresight +- pitch
         groundShapeContainer.rotation = -state.roll/180*Math.PI;   
     }
 }

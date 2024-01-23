@@ -3,7 +3,7 @@
 
 <head>
     <script src="https://pixijs.download/release/pixi.js"></script>
-    <style>
+   <style>
         body {
             margin: 0;
             padding: 0;
@@ -57,13 +57,18 @@
                 .catch(console.error)
         }
 
-        const app = new PIXI.Application({ antialias: true, background: '#000000', resizeTo: window }); // init PIXI
+        const app = new PIXI.Application({  // init PIXI
+            antialias: true, 
+            background: '#000000', 
+            resizeTo: window,
+            //autoResize: true,
+            //resolution: devicePixelRatio 
+        });
         document.body.appendChild(app.view);
 
-        // TOUCH CONTROL (for desktop and phone) 
-        const yoke = yokeInput(app);
-        // yoke.pitch, yoke.roll
-
+      
+        const yoke = yokeInput(app); // get yoke control input (yoke.js)
+        
         const pfdUpdate = pfdInit(app); // PFD initialisieren und PDF update funktion (per Lambdafunktion) zurueckliefern
 
 
