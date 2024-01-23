@@ -31,8 +31,8 @@ function pfdInit(app) {
     var groundShape = new PIXI.Graphics();
     groundShape.beginFill(0x916130); // brown
     groundShape.drawRect(-1000, -1000, 2000, 2000); // big brown box for ground
-    groundShape.beginFill(0xff0000);  // red marker for dev
-    groundShape.drawRect(-10, -1000, 20, 2000); // red marker for dev
+    //groundShape.beginFill(0xff0000);  // red marker for dev
+    //groundShape.drawRect(-10, -1000, 20, 2000); // red marker for dev
     groundShapeContainer.addChild(groundShape);
 
 
