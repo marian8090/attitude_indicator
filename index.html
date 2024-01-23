@@ -25,15 +25,12 @@
     <script>
 
         var deviceOrientation = {
+            orientationPermissionGranted: 0, // Flag for Device orientation permision granted
             alpha: 0,  // Device orientation angle ALPHA
             beta: 45,   // Device orientation angle BETA
             gamma: 0,  // Device orientation angle GAMMA
         }
-        //var alpha = 0;  // Device orientation angle ALPHA
-        //var beta = 45;   // Device orientation angle BETA
-        //var gamma = 0;  // Device orientation angle GAMMA
-        orientationPermissionGranted = 0; // Flag for Device orientation permision granted
-
+      
         state = {               // declare all STATE variables + initial value here
             trueAirspeed: 120,    // indicated airspeed 
             altitude: 3000,       // altitude 
@@ -47,7 +44,7 @@
                 .then(response => {
                     alert(response);
                     if (response == 'granted') {
-                        orientationPermissionGranted = 1;
+                        deviceOrientation.orientationPermissionGranted = 1;
                         window.addEventListener('deviceorientation', (event) => {
                             deviceOrientation.alpha = event.alpha;  // Lese winkel aus
                             deviceOrientation.beta = event.beta;  // Lese winkel aus
@@ -138,7 +135,7 @@
             state.trueAirspeed = 120 - pitch * 2; // je 10grd pitch down +20 kts airspeed
             state.altitude = state.altitude + state.trueAirspeed * Math.tan(pitch / 180 * Math.PI) * delta / 60;
 
-            if (orientationPermissionGranted || touchControlActive) { // DEVICE ORIENTATION CONTROL
+            if (deviceOrientation.orientationPermissionGranted || touchControlActive) { // DEVICE ORIENTATION CONTROL
                 state.pitch = deviceOrientation.beta - 45; // 45grd schraeges phone entspricht Pitch=0
                 state.roll = deviceOrientation.gamma;
             } else { // TOUCH CONTROL
