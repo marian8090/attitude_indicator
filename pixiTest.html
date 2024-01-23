@@ -3,17 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="PixiJS App">
-  <link rel="apple-touch-icon" href="path/to/your/app-icon.png">
-  <title>PixiJS Fullscreen Example</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
-  </style>
+  <title>PixiJS Rotated Line Example</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/6.1.4/pixi.min.js"></script>
 </head>
 <body>
@@ -21,39 +11,26 @@
 <script>
   // Create PixiJS application
   const app = new PIXI.Application({
-    width: window.innerWidth,
-    height: window.innerHeight,
-    resolution: window.devicePixelRatio || 1,
-    autoDensity: true,
+    width: 800,
+    height: 600,
     backgroundColor: 0xAAAAAA,
   });
 
   // Add the Pixi canvas to the body
   document.body.appendChild(app.view);
 
-  // Handle resizing
-  function handleResize() {
-    app.renderer.resize(window.innerWidth, window.innerHeight);
+  // Create a Container to hold the line
+  const container = new PIXI.Container();
+  app.stage.addChild(container);
 
-    // Additional logic for scaling or repositioning game elements
-    // ...
-  }
+  // Create a Graphics object for the line
+  const graphics = new PIXI.Graphics();
+  container.addChild(graphics);
 
-  window.addEventListener('resize', handleResize);
-
-  // Initial canvas size setup
-  window.addEventListener('load', () => {
-    handleResize();
-    
-    // Your PixiJS application logic goes here
-    const sprite = new PIXI.Sprite.from('path/to/your/image.png');
-    sprite.anchor.set(0.5); // Center the sprite
-    sprite.x = app.screen.width / 2;
-    sprite.y = app.screen.height / 2;
-
-    app.stage.addChild(sprite);
+  // Set line style
+  graphics.lineStyle({
+    width: 5,
+    color: 0xFF0000,
+    alpha: 1,
+    alignment: 0.5,
   });
-</script>
-
-</body>
-</html>

@@ -1,8 +1,12 @@
 function pfdInit(app) {
     pfdWidth = 0.90*app.screen.width; // set PFD width
-    pfdHeight = 0.90*app.screen.width; // set PFD height
+    pfdHeight = 0.60*app.screen.width; // set PFD height
     pfdPosX = 0.5*app.screen.width; // set PFD midpoint position X
-    pfdPosY = 0.5*app.screen.width; // set PFD midpoint position Y
+    pfdPosY = 0.4*app.screen.height; // set PFD midpoint position Y
+    const pxPerDegPitch = 10; // pixel horizon pitch per degree plane pitch
+
+
+
 
     var pfd = new PIXI.Container(); // PIXI PFD Container
 
@@ -31,16 +35,13 @@ function pfdInit(app) {
     groundShape.drawRect(-10, -1000, 20, 2000); // red marker for dev
     groundShapeContainer.addChild(groundShape);
 
-    const horizLine = new PIXI.Graphics(); // draw PFD Horizont Line
-    horizLine.lineStyle(2, 0xFFFFFF, 1); 
-    horizLine.moveTo(-1000, -1000);
-    horizLine.lineTo(2000, -1000);
+
 
     // draw Ladder
     var ladderContainer = new PIXI.Container();
     const ladder = new PIXI.Graphics();     
     ladder.lineStyle(2, 0xFFFFFF, 1); // Ladder Line style
-    for (pitch = -30; pitch <= 30; pitch+=10) {     // Ladder 10grd marker - 100px entspricht zB 10grd pitch   
+    for (pitch = -90; pitch <= 90; pitch+=10) {     // Ladder 10grd marker - 100px entspricht zB 10grd pitch   
     ladder.moveTo(-50, pitch*10); ladder.lineTo(50, pitch*10);
     }
     for (pitch = -25; pitch <= 25; pitch+=10) {     // Ladder 5grd marker
@@ -56,15 +57,26 @@ function pfdInit(app) {
         fontFamily: "\"Courier New\", Courier, monospace",
         fontSize: 24,
     });
-    for (pitch = -30; pitch <= 30; pitch+=10) {     // Text 10grd marker
+    for (pitch = -90; pitch <= 90; pitch+=10) {     // Text 10grd marker
         if (pitch !== 0) { // skip 0 deg text
             const ladderText = new PIXI.Text(-pitch, ladderTextStyle);
             ladderText.x = 60;        ladderText.y = pitch*10-24/2;
             ladderContainer.addChild(ladderText);
         }
     }
-    
+    const ladderMask = new PIXI.Graphics(); // Ladder mask
+    ladderMask.lineStyle(1, 0xFFFFFF, 1);
+    ladderMask.beginFill(0xFFFFFF, 1);
+    ladderMask.drawCircle(pfdPosX, pfdPosY, 230); // mask circle - specify radius
+    ladderMask.endFill();
+    ladderContainer.mask = ladderMask; // apply mask
+
+   
     // Horizon Line
+    const horizLine = new PIXI.Graphics(); // draw PFD Horizont Line
+    horizLine.lineStyle(2, 0xFFFFFF, 1); 
+    horizLine.moveTo(-1000, -1000);
+    horizLine.lineTo(2000, -1000);
     groundShapeContainer.addChild(horizLine);
     groundShapeContainer.position.set(pfdPosX, pfdPosY); // positioningung unter boresight (spaeter +- pitch)
     groundShapeContainer.pivot.x = 0; 
@@ -77,14 +89,54 @@ function pfdInit(app) {
     groundShapeMask.drawRect(pfdPosX - pfdWidth/2, pfdPosY - pfdHeight/2, pfdWidth, pfdHeight); // Size for the whole PFD
     groundShapeMask.endFill();
     
+
+    // rollRefs 
+    const rollRefsContainer = new PIXI.Container();
+    const rollRefs = new PIXI.Graphics();
+    rollRefs.lineStyle(2, 0xFFFFFF, 1);
+    for (let a = 0; a <= 180; a += 30) { // 30deg refs
+        if (a != 90) {
+            rollRefs.moveTo(pfdPosX - 240 * Math.cos(a/180*Math.PI) , pfdPosY - 240 * Math.sin(a/180*Math.PI));
+            rollRefs.lineTo(pfdPosX - 270 * Math.cos(a/180*Math.PI) , pfdPosY - 270 * Math.sin(a/180*Math.PI));
+        }
+    }
+    for (let a = 70; a <= 110; a += 10) { // 10deg refs
+        if (a != 90) {
+            rollRefs.moveTo(pfdPosX - 240 * Math.cos(a/180*Math.PI) , pfdPosY - 240 * Math.sin(a/180*Math.PI));
+            rollRefs.lineTo(pfdPosX - 255 * Math.cos(a/180*Math.PI) , pfdPosY - 255 * Math.sin(a/180*Math.PI));
+        }
+    }
+
+    rollRefs.moveTo(pfdPosX     , pfdPosY-240    ); // center ref
+    rollRefs.lineTo(pfdPosX+10  , pfdPosY-240-18 );
+    rollRefs.lineTo(pfdPosX-10  , pfdPosY-240-18 );
+    rollRefs.lineTo(pfdPosX     , pfdPosY-240    );
+   
+    pfd.addChild(rollRefs);
+
+
+    // Roll Pointer
+    const rollPointerContainer = new PIXI.Container();
+    const rollPointer = new PIXI.Graphics();
+    rollPointer.lineStyle(2, 0xFFFFFF, 1);
+    rollPointer.beginFill(0xFFFFFF);
+    rollPointer.moveTo(pfdPosX, pfdPosY-240);
+    rollPointer.lineTo(pfdPosX+15, pfdPosY-240+25);
+    rollPointer.lineTo(pfdPosX-15, pfdPosY-240+25);
+    rollPointer.lineTo(pfdPosX, pfdPosY-240);
+    rollPointer.closePath();
+    rollPointer.endFill();
+    rollPointerContainer.addChild(rollPointer);
+    pfd.addChild(rollPointerContainer);
+
+
     pfd.addChild(groundShapeMask);// add groundShapeMask to PFD container
     pfd.addChild(ladderContainer);// add ladder container to PFD container
     
     pfd.mask = groundShapeMask; // apply mask to the PFD
     
-    //ladderContainer.mask = groundShapeMask; // apply mask to the ladderContainer
 
-
+    
     // draw a boresight shape
     const boresightShape = new PIXI.Graphics();
     boresightShape.beginFill(0x000000);
@@ -100,6 +152,19 @@ function pfdInit(app) {
     boresightShape.lineTo(pfdPosX, pfdPosY);
     boresightShape.closePath();
     boresightShape.endFill();
+    boresightShape.beginFill(0x000000);
+    boresightShape.moveTo(pfdPosX + 200, pfdPosY - 3);
+    boresightShape.lineTo(pfdPosX + 200, pfdPosY + 3);
+    boresightShape.lineTo(pfdPosX + 170, pfdPosY + 3);
+    boresightShape.lineTo(pfdPosX + 170, pfdPosY - 3);
+    boresightShape.closePath();
+    boresightShape.moveTo(pfdPosX - 200, pfdPosY - 3);
+    boresightShape.lineTo(pfdPosX - 200, pfdPosY + 3);
+    boresightShape.lineTo(pfdPosX - 170, pfdPosY + 3);
+    boresightShape.lineTo(pfdPosX - 170, pfdPosY - 3);
+    boresightShape.closePath();
+    boresightShape.endFill();
+    
     pfd.addChild(boresightShape);// add boresightShape to PFD container
         
     // PFD text for indicatedAirspeed und altitude
@@ -118,8 +183,7 @@ function pfdInit(app) {
     
     app.stage.addChild(pfd); // add PFD to stage
 
-    const pxPerDegPitch = 10; // pixel horizon pitch per degree plane pitch
-
+        
     return function (state) {
         airspeedText.text = state.trueAirspeed.toFixed(0);
         altitudeText.text = state.altitude.toFixed(0);
@@ -137,6 +201,14 @@ function pfdInit(app) {
         ladderContainer.pivot.x = 0;
         ladderContainer.pivot.y = -state.pitch*pxPerDegPitch;
         ladderContainer.rotation = -state.roll/180*Math.PI;  
+
+        // rollPointer roll
+        rollPointerContainer.position.x = pfdPosX;
+        rollPointerContainer.position.y = pfdPosY;
+        rollPointerContainer.pivot.x = pfdPosX;
+        rollPointerContainer.pivot.y = pfdPosY;
+        rollPointerContainer.rotation = -state.roll/180*Math.PI;  
+        
     }
 }
 
