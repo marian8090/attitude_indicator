@@ -79,8 +79,8 @@
             for (let i = 0; i < touches.length; i++) {
                 //console.log(touches[i].pageX);
                 //console.log(touches[i].pageY);
-                gamma += (touches[i].pageX - touchStart.x) / 10;
-                beta += (touches[i].pageY - touchStart.y) / 10;
+                deviceOrientation.gamma += (touches[i].pageX - touchStart.x) / 10;
+                deviceOrientation.beta += (touches[i].pageY - touchStart.y) / 10;
                 touchStart = { x: touches[i].pageX, y: touches[i].pageY }
             }
         });
