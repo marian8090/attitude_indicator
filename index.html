@@ -14,7 +14,9 @@
             display: block;
         }
     </style>
+
     <script src="pfd.js"></script>
+    <script src="yoke.js"></script>
 </head>
 
 
@@ -55,54 +57,16 @@
                 .catch(console.error)
         }
 
-        const app = new PIXI.Application({ antialias: true, background: '#000000', resizeTo: window });
+        const app = new PIXI.Application({ antialias: true, background: '#000000', resizeTo: window }); // init PIXI
         document.body.appendChild(app.view);
 
-        // MOUSE CONTROL (for Desktop) 
-        var touchControlActive = false;
-        var touchStart = { x: 0, y: 0 };
-
-        app.view.addEventListener("touchstart", (touchstartEvent) => {
-            touchstartEvent.preventDefault();
-            touchControlActive = true; // flag Touchcontrol wird benutzt
-            const touches = touchstartEvent.touches;
-            for (let i = 0; i < touches.length; i++) {
-                touchStart = { x: touches[i].pageX, y: touches[i].pageY }
-            }
-        });
-        app.view.addEventListener("touchmove", (touchmoveEvent) => {
-            touchmoveEvent.preventDefault();
-            const touches = touchmoveEvent.changedTouches;
-            for (let i = 0; i < touches.length; i++) {
-                //console.log(touches[i].pageX);
-                //console.log(touches[i].pageY);
-                deviceOrientation.gamma += (touches[i].pageX - touchStart.x) / 10;
-                deviceOrientation.beta += (touches[i].pageY - touchStart.y) / 10;
-                touchStart = { x: touches[i].pageX, y: touches[i].pageY }
-            }
-        });
-        app.view.addEventListener("touchend", (touchendEvent) => {
-            touchendEvent.preventDefault();
-        });
+        // TOUCH CONTROL (for desktop and phone) 
+        const yoke = yokeInput(app);
+        // yoke.pitch, yoke.roll
 
         const pfdUpdate = pfdInit(app); // PFD initialisieren und PDF update funktion (per Lambdafunktion) zurueckliefern
 
-        // draw a boresight shape
-        const boresightShape = new PIXI.Graphics();
-        boresightShape.beginFill(0x000000);
-        boresightShape.lineStyle(2, 0xffffff, 1);
-        boresightShape.moveTo(400, 400);
-        boresightShape.lineTo(400 + 150, 400 + 50);
-        boresightShape.lineTo(400 + 100, 400 + 50);
-        boresightShape.lineTo(400, 400);
-        boresightShape.beginFill(0x000000);
-        boresightShape.moveTo(400, 400);
-        boresightShape.lineTo(400 - 150, 400 + 50);
-        boresightShape.lineTo(400 - 100, 400 + 50);
-        boresightShape.lineTo(400, 400);
-        boresightShape.closePath();
-        boresightShape.endFill();
-        app.stage.addChild(boresightShape);
+
 
         // Device orientierung als text ausgeben
         const orientationTextStyle = new PIXI.TextStyle({
@@ -122,30 +86,28 @@
         app.stage.addChild(gammaText);
 
         var time = 0; // Simulationszeit
-        var pitch = 5; // pitch angle
-        var roll = 20; // pitch angle
-
+        
         pfdUpdate(state); // PFD update
 
         // Listen for animate update   
         app.ticker.add((delta) => {
             time += delta / 60; // Simulationszeitberechnung - haengt offenbar an der framerate (60 Hz???)
 
-            // SIMPLE FLIGHT DYNAMIC FAKE MODEL
-            state.trueAirspeed = 120 - pitch * 2; // je 10grd pitch down +20 kts airspeed
-            state.altitude = state.altitude + state.trueAirspeed * Math.tan(pitch / 180 * Math.PI) * delta / 60;
-
-            if (deviceOrientation.orientationPermissionGranted || touchControlActive) { // DEVICE ORIENTATION CONTROL
-                state.pitch = deviceOrientation.beta - 45; // 45grd schraeges phone entspricht Pitch=0
-                state.roll = deviceOrientation.gamma;
-            } else { // TOUCH CONTROL
+            if (deviceOrientation.orientationPermissionGranted || yoke.userInputActive) { // DEVICE ORIENTATION OR TOUCH CONTROL
+                state.pitch = yoke.pitch; // SIMPLE MODE Yoke == state
+                state.roll = yoke.roll;
+            } else { // FAKE INPUT
                 state.pitch = 10 * Math.sin(time / 5) // Fake pitch angle   
                 state.roll = Math.sin(time / 3) / 2; // Fake bank angle          
             }
 
-            alphaText.text = deviceOrientation.alpha.toFixed(2); // update Text output for orientation angle\
-            betaText.text = deviceOrientation.beta.toFixed(2); // update Text output for orientation angle
-            gammaText.text = deviceOrientation.gamma.toFixed(2); // update Text output for orientation angle
+            // SIMPLE FLIGHT DYNAMIC FAKE MODEL
+            state.trueAirspeed = 120 - state.pitch * 2; // je 10grd pitch down +20 kts airspeed
+            state.altitude = state.altitude + state.trueAirspeed * Math.tan(state.pitch / 180 * Math.PI) * delta / 60;
+
+            alphaText.text = deviceOrientation.alpha.toFixed(2);    // update Text output for orientation angle
+            betaText.text = deviceOrientation.beta.toFixed(2);      // update Text output for orientation angle
+            gammaText.text = deviceOrientation.gamma.toFixed(2);    // update Text output for orientation angle
 
             pfdUpdate(state); // PFD update
         });

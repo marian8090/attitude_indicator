@@ -47,19 +47,31 @@ function pfdInit(app) {
     groundShapeContainer.pivot.y = -1000; // Angelpunkt an Oberseite = boresight
     groundShapeContainer.rotation = 0; // spaeter roll (bank angle)
     pfd.addChild(groundShapeContainer);// add groundShapeContainer to PFD container
-    //app.stage.addChild(groundShapeContainer);
-
+   
     const groundShapeMask = new PIXI.Graphics(); // Create a rectangular mark for the groundShape
     groundShapeMask.beginFill(0xFFFFFF);
     groundShapeMask.drawRect(0, 0, 800, 800); // Size for the whole PFD
     groundShapeMask.endFill();
     pfd.addChild(groundShapeMask);// add groundShapeMask to PFD container
-    //app.stage.addChild(groundShapeMask);
     groundShapeContainer.mask = groundShapeMask; // apply mask to the groundShapeContainer
 
-
-
-
+    // draw a boresight shape
+    const boresightShape = new PIXI.Graphics();
+    boresightShape.beginFill(0x000000);
+    boresightShape.lineStyle(2, 0xffffff, 1);
+    boresightShape.moveTo(400, 400);
+    boresightShape.lineTo(400 + 150, 400 + 50);
+    boresightShape.lineTo(400 + 100, 400 + 50);
+    boresightShape.lineTo(400, 400);
+    boresightShape.beginFill(0x000000);
+    boresightShape.moveTo(400, 400);
+    boresightShape.lineTo(400 - 150, 400 + 50);
+    boresightShape.lineTo(400 - 100, 400 + 50);
+    boresightShape.lineTo(400, 400);
+    boresightShape.closePath();
+    boresightShape.endFill();
+    pfd.addChild(boresightShape);// add boresightShape to PFD container
+        
     // PFD text for indicatedAirspeed und altitude
     const airspeedTextStyle = new PIXI.TextStyle({
         fill: "#00ff00",
