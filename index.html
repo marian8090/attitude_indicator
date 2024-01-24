@@ -3,6 +3,7 @@
 
 <head>
     <script src="https://pixijs.download/release/pixi.js"></script>
+
    <style>
         body {
             margin: 0;
@@ -15,8 +16,10 @@
         }
     </style>
 
-    <script src="pfd.js"></script>
+    <script src="pfd.js"></script> 
+    <script src="hsi.js"></script> 
     <script src="yoke.js"></script>
+    <script src="flightmodel.js"></script>
 </head>
 
 
@@ -72,22 +75,6 @@
         const pfdUpdate = pfdInit(app); // PFD initialisieren und PDF update funktion (per Lambdafunktion) zurueckliefern
 
 
-
-        // yoke pitch and roll text
-        const yokeTextStyle = new PIXI.TextStyle({
-            fill: "#00ff00",
-            fontFamily: "\"Courier New\", Courier, monospace",
-            fontSize: 36,
-            fontWeight: "bold"
-        });
-        const yokePitchText = new PIXI.Text(yoke.pitch, yokeTextStyle);
-        yokePitchText.x = 100; yokePitchText.y = 900;
-        app.stage.addChild(yokePitchText);
-        const yokeRollText = new PIXI.Text(yoke.roll, yokeTextStyle);
-        yokeRollText.x = 500; yokeRollText.y = 900;
-        app.stage.addChild(yokeRollText);
-        
-
         var time = 0; // Simulationszeit
         
         pfdUpdate(state); // PFD update
@@ -108,9 +95,7 @@
             state.trueAirspeed = 120 - state.pitch * 2; // je 10grd pitch down +20 kts airspeed
             state.altitude = state.altitude + state.trueAirspeed * Math.tan(state.pitch / 180 * Math.PI) * delta / 60;
 
-            yokePitchText.text = yoke.pitch.toFixed(1);    // update Text output for Yoke Pitch
-            yokeRollText.text = yoke.roll.toFixed(1);    // update Text output for Yoke Roll
-
+            
             pfdUpdate(state); // PFD update
         });
 

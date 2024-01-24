@@ -67,10 +67,10 @@ function pfdInit(app) {
     const ladderMask = new PIXI.Graphics(); // Ladder mask
     ladderMask.lineStyle(1, 0xFFFFFF, 1);
     ladderMask.beginFill(0xFFFFFF, 1);
-    ladderMask.drawCircle(pfdPosX, pfdPosY, 230); // mask circle - specify radius
+    ladderMask.drawCircle(pfdPosX, pfdPosY, 200); // mask circle - specify radius\
+    //ladderMask.drawRect(pfdPosX-100, pfdPosY-200, 200, 400); // mask circle - specify radius
     ladderMask.endFill();
     ladderContainer.mask = ladderMask; // apply mask
-
    
     // Horizon Line
     const horizLine = new PIXI.Graphics(); // draw PFD Horizont Line
@@ -164,9 +164,9 @@ function pfdInit(app) {
     boresightShape.lineTo(pfdPosX - 170, pfdPosY - 3);
     boresightShape.closePath();
     boresightShape.endFill();
-    
     pfd.addChild(boresightShape);// add boresightShape to PFD container
-        
+
+
     // PFD text for indicatedAirspeed und altitude
     const airspeedTextStyle = new PIXI.TextStyle({
         fill: "#00ff00",
@@ -181,9 +181,32 @@ function pfdInit(app) {
     altitudeText.x = pfdPosX + pfdWidth/2 - 150; altitudeText.y = pfdPosY - 20;
     pfd.addChild(altitudeText);     // add altitudeText to PFD container
     
+    
+    // yoke pitch and roll text
+    const yokeTextStyle = new PIXI.TextStyle({
+        fill: "#00ff00",
+        fontFamily: "\"Courier New\", Courier, monospace",
+        fontSize: 36,
+        fontWeight: "bold"
+    });
+    const yokePitchText = new PIXI.Text('-.-', yokeTextStyle);
+    yokePitchText.x = pfdPosX - pfdWidth/2 + 50; yokePitchText.y = pfdPosY + pfdHeight/2 - 50;
+    pfd.addChild(yokePitchText);
+    const yokeRollText = new PIXI.Text('-.-', yokeTextStyle);
+    yokeRollText.x = pfdPosX - pfdWidth/2 + 250; yokeRollText.y = pfdPosY + pfdHeight/2 - 50;
+    pfd.addChild(yokeRollText);
+
+
+    
+    
     app.stage.addChild(pfd); // add PFD to stage
 
-        
+    
+    
+
+
+
+
     return function (state) {
         airspeedText.text = state.trueAirspeed.toFixed(0);
         altitudeText.text = state.altitude.toFixed(0);
@@ -208,6 +231,11 @@ function pfdInit(app) {
         rollPointerContainer.pivot.x = pfdPosX;
         rollPointerContainer.pivot.y = pfdPosY;
         rollPointerContainer.rotation = -state.roll/180*Math.PI;  
+
+        // // update Text output for Yoke Pitch and Roll
+        yokePitchText.text = "P:" + yoke.pitch.toFixed(1);    
+        yokeRollText.text = "R:" + yoke.roll.toFixed(1);
+
         
     }
 }
