@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+
     <script src="https://pixijs.download/release/pixi.js"></script>
 
    <style>
@@ -39,6 +41,7 @@
         state = {               // declare all STATE variables + initial value here
             trueAirspeed: 120,    // indicated airspeed 
             altitude: 3000,       // altitude 
+            heading: 0,           // heading
             pitch: 0,             // pitch 
             roll: 0,              // roll
         }
@@ -72,7 +75,9 @@
       
         const yoke = yokeInput(app); // get yoke control input (yoke.js)
         
-        const pfdUpdate = pfdInit(app); // PFD initialisieren und PDF update funktion (per Lambdafunktion) zurueckliefern
+        const pfdUpdate = pfdInit(app); // PFD initialisieren und PFD update funktion (per Lambdafunktion) zurueckliefern
+
+        const hsiUpdate = hsiInit(app); // HSI initialisieren und HSI update funktion (per Lambdafunktion) zurueckliefern
 
 
         var time = 0; // Simulationszeit
@@ -94,9 +99,10 @@
             // SIMPLE FLIGHT DYNAMIC FAKE MODEL
             state.trueAirspeed = 120 - state.pitch * 2; // je 10grd pitch down +20 kts airspeed
             state.altitude = state.altitude + state.trueAirspeed * Math.tan(state.pitch / 180 * Math.PI) * delta / 60;
-
+            state.heading = state.heading + state.trueAirspeed*1852/3600 * Math.tan(state.roll/180*Math.PI) * delta/60; 
             
             pfdUpdate(state); // PFD update
+            hsiUpdate(state); // PFD update
         });
 
     </script>

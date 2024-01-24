@@ -6,8 +6,6 @@ function pfdInit(app) {
     const pxPerDegPitch = 10; // pixel horizon pitch per degree plane pitch
 
 
-
-
     var pfd = new PIXI.Container(); // PIXI PFD Container
 
     const skyShape = new PIXI.Graphics();   // PFD SKY
@@ -182,19 +180,22 @@ function pfdInit(app) {
     pfd.addChild(altitudeText);     // add altitudeText to PFD container
     
     
-    // yoke pitch and roll text
+    // (yoke) pitch, roll, heading text
     const yokeTextStyle = new PIXI.TextStyle({
         fill: "#00ff00",
         fontFamily: "\"Courier New\", Courier, monospace",
         fontSize: 36,
         fontWeight: "bold"
     });
-    const yokePitchText = new PIXI.Text('-.-', yokeTextStyle);
+    const yokePitchText = new PIXI.Text('---', yokeTextStyle);
     yokePitchText.x = pfdPosX - pfdWidth/2 + 50; yokePitchText.y = pfdPosY + pfdHeight/2 - 50;
     pfd.addChild(yokePitchText);
-    const yokeRollText = new PIXI.Text('-.-', yokeTextStyle);
+    const yokeRollText = new PIXI.Text('---', yokeTextStyle);
     yokeRollText.x = pfdPosX - pfdWidth/2 + 250; yokeRollText.y = pfdPosY + pfdHeight/2 - 50;
     pfd.addChild(yokeRollText);
+    const headingText = new PIXI.Text('---', yokeTextStyle);
+    headingText.x = pfdPosX - pfdWidth/2 + 450; headingText.y = pfdPosY + pfdHeight/2 - 50;
+    pfd.addChild(headingText);
 
 
     
@@ -232,9 +233,10 @@ function pfdInit(app) {
         rollPointerContainer.pivot.y = pfdPosY;
         rollPointerContainer.rotation = -state.roll/180*Math.PI;  
 
-        // // update Text output for Yoke Pitch and Roll
+        // // update Text output for Yoke Pitch/Roll, Heading
         yokePitchText.text = "P:" + yoke.pitch.toFixed(1);    
         yokeRollText.text = "R:" + yoke.roll.toFixed(1);
+        headingText.text = "HDG" + state.heading.toFixed(1);
 
         
     }
