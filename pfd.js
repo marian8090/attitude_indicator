@@ -31,13 +31,13 @@ function pfdInit(app) {
     const ladder = new PIXI.Graphics();     
     ladder.lineStyle(2, 0xFFFFFF, 1); // Ladder Line style
     for (pitch = -90; pitch <= 90; pitch+=10) {     // Ladder 10grd marker - 100px entspricht zB 10grd pitch   
-    ladder.moveTo(-50, pitch*10); ladder.lineTo(50, pitch*10);
+    ladder.moveTo(-30, pitch*10); ladder.lineTo(30, pitch*10);
     }
     for (pitch = -25; pitch <= 25; pitch+=10) {     // Ladder 5grd marker
-    ladder.moveTo(-25, pitch*10); ladder.lineTo(25, pitch*10);
+    ladder.moveTo(-15, pitch*10); ladder.lineTo(15, pitch*10);
     }
     for (pitch = -27.5; pitch <= 27.5; pitch+=5) {     // Ladder 2.5grd marker
-    ladder.moveTo(-12.5, pitch*10); ladder.lineTo(12.5, pitch*10);
+    ladder.moveTo(-7.5, pitch*10); ladder.lineTo(7.5, pitch*10);
     }
     ladderContainer.addChild(ladder);
 
@@ -48,15 +48,15 @@ function pfdInit(app) {
     });
     for (pitch = -90; pitch <= 90; pitch+=10) {     // Text 10grd marker
         if (pitch !== 0) { // skip 0 deg text
-            const ladderText = new PIXI.Text(-pitch, ladderTextStyle);
-            ladderText.x = 60;        ladderText.y = pitch*10-24/2;
+            const ladderText = new PIXI.Text(Math.abs(pitch), ladderTextStyle);
+            ladderText.x = 38;        ladderText.y = pitch*10-24/2;
             ladderContainer.addChild(ladderText);
         }
     }
     const ladderMask = new PIXI.Graphics(); // Ladder mask
     ladderMask.lineStyle(1, 0xFFFFFF, 1);
     ladderMask.beginFill(0xFFFFFF, 1);
-    ladderMask.drawCircle(pfdPosX, pfdPosY, 200); // mask circle - specify radius\
+    ladderMask.drawCircle(pfdPosX, pfdPosY, 210); // mask circle - specify radius\
     //ladderMask.drawRect(pfdPosX-100, pfdPosY-200, 200, 400); // mask circle - specify radius
     ladderMask.endFill();
     ladderContainer.mask = ladderMask; // apply mask
@@ -86,7 +86,7 @@ function pfdInit(app) {
     for (let a = 0; a <= 180; a += 30) { // 30deg refs
         if (a != 90) {
             rollRefs.moveTo(pfdPosX - 240 * Math.cos(a/180*Math.PI) , pfdPosY - 240 * Math.sin(a/180*Math.PI));
-            rollRefs.lineTo(pfdPosX - 270 * Math.cos(a/180*Math.PI) , pfdPosY - 270 * Math.sin(a/180*Math.PI));
+            rollRefs.lineTo(pfdPosX - 262 * Math.cos(a/180*Math.PI) , pfdPosY - 262 * Math.sin(a/180*Math.PI));
         }
     }
     for (let a = 70; a <= 110; a += 10) { // 10deg refs
@@ -95,13 +95,24 @@ function pfdInit(app) {
             rollRefs.lineTo(pfdPosX - 255 * Math.cos(a/180*Math.PI) , pfdPosY - 255 * Math.sin(a/180*Math.PI));
         }
     }
+    rollRefsContainer.addChild(rollRefs);
 
-    rollRefs.moveTo(pfdPosX     , pfdPosY-240    ); // center ref
-    rollRefs.lineTo(pfdPosX+10  , pfdPosY-240-18 );
-    rollRefs.lineTo(pfdPosX-10  , pfdPosY-240-18 );
-    rollRefs.lineTo(pfdPosX     , pfdPosY-240    );
-   
-    pfd.addChild(rollRefs);
+    
+    for (a = -45; a <= 45; a += 45) {  // center and 45deg refs
+        const center45RollRef = new PIXI.Graphics; 
+        center45RollRef.lineStyle(2, 0xFFFFFF, 1);
+        center45RollRef.position.x = pfdPosX;
+        center45RollRef.position.y = pfdPosY;
+        center45RollRef.moveTo( 0  , -240    ); 
+        center45RollRef.lineTo(+8  , -240-15 );
+        center45RollRef.lineTo(-8  , -240-15 );
+        center45RollRef.lineTo( 0  , -240    );
+        center45RollRef.rotation = a / 180*Math.PI; // -45 / 0 / 45 deg 
+        rollRefsContainer.addChild(center45RollRef);    
+    }
+    
+    
+    pfd.addChild(rollRefsContainer);
 
 
     // Roll Pointer
@@ -109,10 +120,10 @@ function pfdInit(app) {
     const rollPointer = new PIXI.Graphics();
     rollPointer.lineStyle(2, 0xFFFFFF, 1);
     rollPointer.beginFill(0xFFFFFF);
-    rollPointer.moveTo(pfdPosX, pfdPosY-240);
-    rollPointer.lineTo(pfdPosX+15, pfdPosY-240+25);
-    rollPointer.lineTo(pfdPosX-15, pfdPosY-240+25);
-    rollPointer.lineTo(pfdPosX, pfdPosY-240);
+    rollPointer.moveTo(pfdPosX, pfdPosY-237);
+    rollPointer.lineTo(pfdPosX+12, pfdPosY-237+20);
+    rollPointer.lineTo(pfdPosX-12, pfdPosY-237+20);
+    rollPointer.lineTo(pfdPosX, pfdPosY-237);
     rollPointer.closePath();
     rollPointer.endFill();
     rollPointerContainer.addChild(rollPointer);
@@ -161,7 +172,7 @@ function pfdInit(app) {
         fill: "#00ff00",
         fontFamily: "\"Courier New\", Courier, monospace",
         fontSize: 36,
-        fontWeight: "bold"
+        //fontWeight: "bold"
     });
     const airspeedText = new PIXI.Text('---', airspeedTextStyle);
     airspeedText.x = pfdPosX - pfdWidth/2 + 50; airspeedText.y = pfdPosY - 20;
@@ -176,7 +187,7 @@ function pfdInit(app) {
         fill: "#00ff00",
         fontFamily: "\"Courier New\", Courier, monospace",
         fontSize: 36,
-        fontWeight: "bold"
+        //fontWeight: "bold"
     });
     const yokePitchText = new PIXI.Text('---', yokeTextStyle);
     yokePitchText.x = pfdPosX - pfdWidth/2 + 50; yokePitchText.y = pfdPosY + pfdHeight/2 - 50;

@@ -42,7 +42,7 @@ function hsiInit(app) {
     const compassCardTextStyle = new PIXI.TextStyle({ 
         fill: "#ffffff",
         fontFamily: "\"Courier New\", Courier, monospace",
-        fontSize: 24,
+        fontSize: 28,
     });
     for (a = 0; a <= 330; a += 30) {    
         const compassCardText = new PIXI.Text(a/10 , compassCardTextStyle);
@@ -58,7 +58,7 @@ function hsiInit(app) {
         fill: "#00ff00",
         fontFamily: "\"Courier New\", Courier, monospace",
         fontSize: 36,
-        fontWeight: "bold"
+        //fontWeight: "bold"
     });
     
     const headingTextContainer = new PIXI.Container;
