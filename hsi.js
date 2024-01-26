@@ -1,7 +1,7 @@
 function hsiInit(app) {
     hsiSize = 0.60*app.screen.width; // set HSI size (= height = width)
     hsiPosX = 0.5*app.screen.width; // set HSI midpoint position X
-    hsiPosY = 0.7*app.screen.height; // set HSI midpoint position Y
+    hsiPosY = 0.45*app.screen.height; // set HSI midpoint position Y
 
 
     var hsi = new PIXI.Container(); // PIXI HSI Container
@@ -38,7 +38,7 @@ function hsiInit(app) {
     }
     hsi.addChild(compassCard);
     
-    // compass card heading text
+    // compass card heading refs text
     const compassCardTextStyle = new PIXI.TextStyle({ 
         fill: "#ffffff",
         fontFamily: "\"Courier New\", Courier, monospace",
@@ -53,23 +53,53 @@ function hsiInit(app) {
         compassCard.addChild(compassCardText);
     }
 
+    // HSI current Heading
+     const headingTextStyle = new PIXI.TextStyle({
+        fill: "#00ff00",
+        fontFamily: "\"Courier New\", Courier, monospace",
+        fontSize: 36,
+        fontWeight: "bold"
+    });
     
-    
+    const headingTextContainer = new PIXI.Container;
+    const headingText = new PIXI.Text('---', headingTextStyle);
+    headingTextContainer.addChild(headingText);
+    headingTextContainer.x = hsiPosX - 34; headingTextContainer.y = hsiPosY - hsiSize/2 -40;
+    hsi.addChild(headingTextContainer);     // add headingText to HSI container
+    const headingTextFrame = new PIXI.Graphics; // HGG Frame
+    headingTextFrame.lineStyle(2, 0xFFFFFF, 1);
+    headingTextFrame.moveTo(-5,0);
+    headingTextFrame.lineTo(-5,36);
+    headingTextFrame.lineTo(19,36);
+    headingTextFrame.lineTo(33,50);
+    headingTextFrame.lineTo(47,36);
+    headingTextFrame.lineTo(71,36);
+    headingTextFrame.lineTo(71,0);
+    headingTextFrame.lineTo(-5,0);
+
+    headingTextContainer.addChild(headingTextFrame);
+
+
+
 
 
 
     app.stage.addChild(hsi); // add HSI to stage
 
 
-
-
     return function (state) {
+        // Compass card rotation
         compassCard.position.x = hsiPosX;
         compassCard.position.y = hsiPosY;
         compassCard.pivot.x = hsiPosX;
         compassCard.pivot.y = hsiPosY;
         compassCard.rotation = -state.heading/180*Math.PI; 
-    
+        
+        // Text update
+        
+        headingText.text = state.heading.toFixed(0).padStart(3, '0'); 
+
+
     }
 
 

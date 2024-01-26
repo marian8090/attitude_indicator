@@ -1,8 +1,8 @@
 function pfdInit(app) {
-    pfdWidth = 0.90*app.screen.width; // set PFD width
+    pfdWidth = 1.0*app.screen.width; // set PFD width
     pfdHeight = 0.60*app.screen.width; // set PFD height
     pfdPosX = 0.5*app.screen.width; // set PFD midpoint position X
-    pfdPosY = 0.4*app.screen.height; // set PFD midpoint position Y
+    pfdPosY = 0.14*app.screen.height; // set PFD midpoint position Y
     const pxPerDegPitch = 10; // pixel horizon pitch per degree plane pitch
 
 
@@ -13,15 +13,6 @@ function pfdInit(app) {
     skyShape.drawRect(pfdPosX - pfdWidth/2, pfdPosY - pfdHeight/2, pfdWidth, pfdHeight);      // blue sky rectangle as background for whole PFD
     //skyShape.drawRect(0, 0,800, 800);      // blue sky rectangle as background for whole PFD
     pfd.addChild(skyShape);                 // add sky to PFD container
-
-    // Get the screen height and width in logical pixels
-    // console.log(app.screen.width);
-    // console.log(app.screen.height);
-    // console.log(app.renderer.width);
-    // console.log(app.renderer.height);
-    // console.log(window.innerWidth);
-    // console.log(window.innerHeight);
-    // console.log(window.devicePixelRatio);
 
 
     // draw Rect + Line for the PFD ground IN SUB-CONTAINER
@@ -180,7 +171,7 @@ function pfdInit(app) {
     pfd.addChild(altitudeText);     // add altitudeText to PFD container
     
     
-    // (yoke) pitch, roll, heading text
+    // (yoke) pitch, roll
     const yokeTextStyle = new PIXI.TextStyle({
         fill: "#00ff00",
         fontFamily: "\"Courier New\", Courier, monospace",
@@ -193,9 +184,9 @@ function pfdInit(app) {
     const yokeRollText = new PIXI.Text('---', yokeTextStyle);
     yokeRollText.x = pfdPosX - pfdWidth/2 + 250; yokeRollText.y = pfdPosY + pfdHeight/2 - 50;
     pfd.addChild(yokeRollText);
-    const headingText = new PIXI.Text('---', yokeTextStyle);
-    headingText.x = pfdPosX - pfdWidth/2 + 450; headingText.y = pfdPosY + pfdHeight/2 - 50;
-    pfd.addChild(headingText);
+    //const headingText = new PIXI.Text('---', yokeTextStyle);
+    //headingText.x = pfdPosX - pfdWidth/2 + 450; headingText.y = pfdPosY + pfdHeight/2 - 50;
+    //pfd.addChild(headingText);
 
 
     
@@ -236,7 +227,7 @@ function pfdInit(app) {
         // // update Text output for Yoke Pitch/Roll, Heading
         yokePitchText.text = "P:" + yoke.pitch.toFixed(1);    
         yokeRollText.text = "R:" + yoke.roll.toFixed(1);
-        headingText.text = "HDG" + state.heading.toFixed(1);
+        //headingText.text = "HDG" + state.heading.toFixed(1);
 
         
     }

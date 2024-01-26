@@ -101,6 +101,9 @@
             state.altitude = state.altitude + state.trueAirspeed * Math.tan(state.pitch / 180 * Math.PI) * delta / 60;
             state.heading = state.heading + state.trueAirspeed*1852/3600 * Math.tan(state.roll/180*Math.PI) * delta/60; 
             
+            state.heading = Math.max(state.heading % 360, (state.heading+360) % 360); // heading 0-359 (AKTUELL NOCH 0-360!??)
+
+
             pfdUpdate(state); // PFD update
             hsiUpdate(state); // PFD update
         });
