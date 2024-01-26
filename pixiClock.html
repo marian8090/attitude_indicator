@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://pixijs.download/release/pixi.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+
+<body>
+    <script>
+        const app = new PIXI.Application({
+            antialias: true, 
+            background: '#000000', 
+            resizeTo: window,
+        })
+        document.body.appendChild(app.view);
+
+        const clockX = 0.5*app.screen.width; // clock midpoint position X
+        const clockY = 0.5*app.screen.height; // clock  midpoint position Y
+        const ro = Math.min(app.screen.width, app.screen.height)*0.45; // watchFace refs outer radius
+        const ri = ro - 50; // watchFace refs inner radius
+
+        // Create a new Date object
+        var currentTime = new Date();
+
+        // Get various components of the current time
+        var currentYear = currentTime.getFullYear();
+        var currentMonth = currentTime.getMonth() + 1; // Months are zero-indexed, so we add 1
+        var currentDate = currentTime.getDate();
+        var currentHour = currentTime.getHours();
+        var currentMinute = currentTime.getMinutes();
+        var currentSecond = currentTime.getSeconds();
+        
+        const watch = new PIXI.Container();
+        const watchFace = new PIXI.Graphics();
+        watch.addChild(watchFace);
+        watchFace.lineStyle(2, 0xFFFFFF, 1); // watchFace refs line style
+        for (hour = 0; hour <= 12; hour += 1) {
+            watchFace.moveTo(clockX + ri*Math.sin(hour*30/180*Math.PI), clockY - ri*Math.cos(hour*30/180*Math.PI));
+            watchFace.lineTo(clockX + ro*Math.sin(hour*30/180*Math.PI), clockY - ro*Math.cos(hour*30/180*Math.PI));
+        }
+        
+        const secondHandContainer = new PIXI.Container;
+        const secondHand = new PIXI.Graphics();
+        secondHandContainer.addChild(secondHand);
+        secondHand.x = clockX;
+        secondHand.y = clockY;
+        //secondHand.beginFill(0xFFFFFF); // colour second hand
+        secondHand.lineStyle(4, 0xFFFFFF, 1 );
+        secondHand.moveTo(0,0);
+        secondHand.lineTo(0, -1.0 * ro);
+        //secondHand.closePath();
+        watch.addChild(secondHandContainer)
+        
+        const minuteHandContainer = new PIXI.Container;
+        const minuteHand = new PIXI.Graphics();
+        minuteHandContainer.addChild(minuteHand);
+        minuteHand.x = clockX;
+        minuteHand.y = clockY;
+        minuteHand.beginFill(0xFFFFFF); // colour second hand
+        minuteHand.moveTo(0,0);
+        minuteHand.lineTo(10, -0.4 * ro);
+        minuteHand.lineTo(0, -0.95 * ro);
+        minuteHand.lineTo(-10,-0.4 * ro);
+        minuteHand.lineTo(0,0);
+        minuteHand.closePath();
+        minuteHand.endFill();
+        watch.addChild(minuteHandContainer)
+        
+        const hourHandContainer = new PIXI.Container;
+        const hourHand = new PIXI.Graphics();
+        hourHandContainer.addChild(hourHand);
+        hourHand.x = clockX;
+        hourHand.y = clockY;
+        hourHand.beginFill(0xFFFFFF); // colour second hand
+        hourHand.moveTo(0,0);
+        hourHand.lineTo(20, -0.25 * ro);
+        hourHand.lineTo(0, -0.5 * ro);
+        hourHand.lineTo(-20,-0.25 * ro);
+        hourHand.lineTo(0,0);
+        hourHand.closePath();
+        hourHand.endFill();
+        watch.addChild(hourHandContainer)
+      
+        app.stage.addChild(watch);        // BRING WATCH TO STAGE
+
+        //LISTEN FOR ANIMATE UPDATE
+        app.ticker.add((delta) => {
+            currentTime = new Date(); // update current time
+            //currentYear = currentTime.getFullYear();
+            //currentMonth = currentTime.getMonth() + 1; // Months are zero-indexed, so we add 1
+            //currentDate = currentTime.getDate();
+            currentHour = currentTime.getHours();
+            currentMinute = currentTime.getMinutes();
+            currentSecond = currentTime.getSeconds();
+
+            secondHand.rotation=currentSecond/30*Math.PI;
+            minuteHand.rotation=currentMinute/30*Math.PI;
+            hourHand.rotation=currentHour/30*Math.PI;
+            
+            //console.log(currentSecond);
+        });
+
+    </script>
+</body>
+</html>
