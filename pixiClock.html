@@ -20,10 +20,16 @@
     <script>
         const app = new PIXI.Application({
             antialias: true,
+            autoDensity: true,
+            resolution: 2,
             background: '#000000',
             resizeTo: window,
         })
         document.body.appendChild(app.view);
+
+        // Set the desired minimum FPS
+        //app.ticker.minFPS = 8; // Set to 30 FPS
+        app.ticker.maxFPS = 8; // equals 28.800 automatic watch
 
         const clockX = 0.5 * app.screen.width; // clock midpoint position X
         const clockY = 0.5 * app.screen.height; // clock  midpoint position Y
@@ -32,7 +38,7 @@
         const color = 0xFFFFFF;
 
         // Create a new Date object
-        var currentTime = new Date();
+        var t = new Date();
 
         // Watch face
         const watch = new PIXI.Container();
@@ -80,6 +86,7 @@
         minuteHand.x = clockX;
         minuteHand.y = clockY;
         minuteHand.beginFill(color); // colour second hand
+        minuteHand.lineStyle(1, 0x000000); // center circle
         minuteHand.moveTo(0, 0);
         minuteHand.lineTo(10, -0.4 * ro);
         minuteHand.lineTo(0, -0.95 * ro);
@@ -98,8 +105,8 @@
         secondHand.lineTo(0, -1.0 * (ri + ro) / 2);
         secondHand.closePath();
         secondHand.endFill();
-        secondHand.lineStyle(0); // center circle
         secondHand.beginFill(0xFF0000);
+        secondHand.lineStyle(0, 0x000000); // center circle
         secondHand.drawCircle(0, 0, ro * 0.03); // center circle
         secondHand.endFill();
         watch.addChild(secondHand)
@@ -109,11 +116,12 @@
 
         //LISTEN FOR ANIMATE UPDATE
         app.ticker.add((delta) => {
-            currentTime = new Date(); // update current time
-            dayText.text = currentTime.getDate();
-            secondHand.rotation = (currentTime.getSeconds() + currentTime.getMilliseconds()/1000) / 30 * Math.PI ;    
-            minuteHand.rotation = (currentTime.getMinutes() + currentTime.getSeconds()/60 + currentTime.getMilliseconds()/1000/60) / 30 * Math.PI ; 
-            hourHand.rotation   = (currentTime.getHours()   + currentTime.getMinutes()/60 + currentTime.getSeconds()/3600 + currentTime.getMilliseconds()/3600000) * 30 / 180 * Math.PI ; 
+            t = new Date(); // update current time
+
+            dayText.text = t.getDate();
+            secondHand.rotation = (t.getSeconds() + t.getMilliseconds()/1000) / 30 * Math.PI ;    
+            minuteHand.rotation = (t.getMinutes() + t.getSeconds()/60 + t.getMilliseconds()/1000/60) / 30 * Math.PI ; 
+            hourHand.rotation   = (t.getHours()   + t.getMinutes()/60 + t.getSeconds()/3600 + t.getMilliseconds()/3600000) * 30 / 180 * Math.PI ; 
             //hourHand.rotation = currentTime.getHours() / 6 * Math.PI + currentTime.getMinutes() / 30 * Math.PI / 12 + currentTime.getSeconds() / 30 * Math.PI / 60 / 12;
             
         });
