@@ -16,7 +16,6 @@
     </style>
 </head>
 
-
 <body>
     <script>
         const app = new PIXI.Application({
@@ -35,14 +34,6 @@
         // Create a new Date object
         var currentTime = new Date();
 
-        // Get various components of the current time
-        var currentYear = currentTime.getFullYear();
-        var currentMonth = currentTime.getMonth() + 1; // Months are zero-indexed, so we add 1
-        var currentDate = currentTime.getDate();
-        var currentHour = currentTime.getHours();
-        var currentMinute = currentTime.getMinutes();
-        var currentSecond = currentTime.getSeconds();
-
         // Watch face
         const watch = new PIXI.Container();
         const watchFace = new PIXI.Graphics();
@@ -57,40 +48,21 @@
             watchFace.moveTo(clockX + (ri + ro) / 2 * Math.sin(hour * 30 / 180 / 5 * Math.PI), clockY - (ri + ro) / 2 * Math.cos(hour * 30 / 180 / 5 * Math.PI));
             watchFace.lineTo(clockX + ro * Math.sin(hour * 30 / 180 / 5 * Math.PI), clockY - ro * Math.cos(hour * 30 / 180 / 5 * Math.PI));
         }
-        watchFace.beginFill(color);
-        watchFace.drawCircle(clockX, clockY, ro * 0.03); // center circle
-        watchFace.endFill();
+        
+        // Date Text
+        const dayTextStyle = new PIXI.TextStyle({
+            fill: color,
+            fontFamily: "\"Courier New\", Courier, monospace",
+            fontSize: 0.2 * ro,
+            fontWeight: "bold"
+        })
+        const dayText = new PIXI.Text('--', dayTextStyle);
+        dayText.x = clockX + 0.5 * ro;
+        dayText.y = clockY - 0.5 * 0.2 * ro;
+        watch.addChild(dayText)
 
-
-
-        const secondHandContainer = new PIXI.Container;
-        const secondHand = new PIXI.Graphics();
-        secondHandContainer.addChild(secondHand);
-        secondHand.x = clockX;
-        secondHand.y = clockY;
-        secondHand.lineStyle(4, color, 1);
-        secondHand.moveTo(0, 0);
-        secondHand.lineTo(0, -1.0 * (ri + ro) / 2);
-        watch.addChild(secondHandContainer)
-
-        const minuteHandContainer = new PIXI.Container;
-        const minuteHand = new PIXI.Graphics();
-        minuteHandContainer.addChild(minuteHand);
-        minuteHand.x = clockX;
-        minuteHand.y = clockY;
-        minuteHand.beginFill(color); // colour second hand
-        minuteHand.moveTo(0, 0);
-        minuteHand.lineTo(10, -0.4 * ro);
-        minuteHand.lineTo(0, -0.95 * ro);
-        minuteHand.lineTo(-10, -0.4 * ro);
-        minuteHand.lineTo(0, 0);
-        minuteHand.closePath();
-        minuteHand.endFill();
-        watch.addChild(minuteHandContainer)
-
-        const hourHandContainer = new PIXI.Container;
+        // Hour hand
         const hourHand = new PIXI.Graphics();
-        hourHandContainer.addChild(hourHand);
         hourHand.x = clockX;
         hourHand.y = clockY;
         hourHand.beginFill(color); // colour second hand
@@ -101,33 +73,49 @@
         hourHand.lineTo(0, 0);
         hourHand.closePath();
         hourHand.endFill();
-        watch.addChild(hourHandContainer)
+        watch.addChild(hourHand)
 
-        // Date Text
-        const dayTextContainer = new PIXI.Container;
-        const dayTextStyle = new PIXI.TextStyle({
-            fill: color,
-            fontFamily: "\"Courier New\", Courier, monospace",
-            fontSize: 0.2 * ro,
-            fontWeight: "bold"
-        })
-        const dayText = new PIXI.Text('--', dayTextStyle);
-        dayTextContainer.addChild(dayText);
-        dayText.x = clockX + 0.5 * ro;
-        dayText.y = clockY - 0.5 * 0.2 * ro;
-        watch.addChild(dayTextContainer)
+        // Minute Hand
+        const minuteHand = new PIXI.Graphics();
+        minuteHand.x = clockX;
+        minuteHand.y = clockY;
+        minuteHand.beginFill(color); // colour second hand
+        minuteHand.moveTo(0, 0);
+        minuteHand.lineTo(10, -0.4 * ro);
+        minuteHand.lineTo(0, -0.95 * ro);
+        minuteHand.lineTo(-10, -0.4 * ro);
+        minuteHand.lineTo(0, 0);
+        minuteHand.closePath();
+        minuteHand.endFill();
+        watch.addChild(minuteHand)
 
+        // Seconds Hands
+        const secondHand = new PIXI.Graphics();
+        secondHand.x = clockX;
+        secondHand.y = clockY;
+        secondHand.lineStyle(4, 0xFF0000, 1);
+        secondHand.moveTo(0, 0);
+        secondHand.lineTo(0, -1.0 * (ri + ro) / 2);
+        secondHand.closePath();
+        secondHand.endFill();
+        secondHand.lineStyle(0); // center circle
+        secondHand.beginFill(0xFF0000);
+        secondHand.drawCircle(0, 0, ro * 0.03); // center circle
+        secondHand.endFill();
+        watch.addChild(secondHand)
 
-
-        app.stage.addChild(watch);        // BRING WATCH TO STAGE
+        // BRING WATCH TO STAGE
+        app.stage.addChild(watch);
 
         //LISTEN FOR ANIMATE UPDATE
         app.ticker.add((delta) => {
             currentTime = new Date(); // update current time
             dayText.text = currentTime.getDate();
-            secondHand.rotation = currentTime.getSeconds() / 30 * Math.PI;
-            minuteHand.rotation = currentTime.getMinutes() / 30 * Math.PI + currentTime.getSeconds() / 30 * Math.PI / 60;
-            hourHand.rotation = currentTime.getHours() / 6 * Math.PI + currentTime.getMinutes() / 30 * Math.PI / 12 + currentTime.getSeconds() / 30 * Math.PI / 60 / 12;
+            secondHand.rotation = (currentTime.getSeconds() + currentTime.getMilliseconds()/1000) / 30 * Math.PI ;    
+            minuteHand.rotation = (currentTime.getMinutes() + currentTime.getSeconds()/60 + currentTime.getMilliseconds()/1000/60) / 30 * Math.PI ; 
+            hourHand.rotation   = (currentTime.getHours()   + currentTime.getMinutes()/60 + currentTime.getSeconds()/3600 + currentTime.getMilliseconds()/3600000) * 30 / 180 * Math.PI ; 
+            //hourHand.rotation = currentTime.getHours() / 6 * Math.PI + currentTime.getMinutes() / 30 * Math.PI / 12 + currentTime.getSeconds() / 30 * Math.PI / 60 / 12;
+            
         });
 
     </script>
