@@ -42,14 +42,25 @@
         var currentMinute = currentTime.getMinutes();
         var currentSecond = currentTime.getSeconds();
         
-        const watch = new PIXI.Container();
+        // Watch face
+        const watch = new PIXI.Container(); 
         const watchFace = new PIXI.Graphics();
         watch.addChild(watchFace);
-        watchFace.lineStyle(2, 0x00FF00, 1); // watchFace refs line style
+        watchFace.lineStyle(4, 0x00FF00, 1); // watchFace refs line style
         for (hour = 0; hour <= 12; hour += 1) {
             watchFace.moveTo(clockX + ri*Math.sin(hour*30/180*Math.PI), clockY - ri*Math.cos(hour*30/180*Math.PI));
             watchFace.lineTo(clockX + ro*Math.sin(hour*30/180*Math.PI), clockY - ro*Math.cos(hour*30/180*Math.PI));
         }
+        watchFace.lineStyle(1, 0x00FF00, 1); // watchFace refs line style
+        for (hour = 0; hour <= 60; hour += 1) {
+            watchFace.moveTo(clockX + (ri+ro)/2*Math.sin(hour*30/180/5*Math.PI), clockY - (ri+ro)/2*Math.cos(hour*30/180/5*Math.PI));
+            watchFace.lineTo(clockX + ro*Math.sin(hour*30/180/5*Math.PI), clockY - ro*Math.cos(hour*30/180/5*Math.PI));
+        }
+        watchFace.beginFill(0x00FF00); 
+        watchFace.drawCircle(clockX, clockY, ro * 0.03); // center circle
+        watchFace.endFill();
+        
+
         
         const secondHandContainer = new PIXI.Container;
         const secondHand = new PIXI.Graphics();
@@ -58,7 +69,7 @@
         secondHand.y = clockY;
         secondHand.lineStyle(4, 0x00FF00, 1 );
         secondHand.moveTo(0,0);
-        secondHand.lineTo(0, -1.0 * ro);
+        secondHand.lineTo(0, -1.0 * (ri+ro)/2);
         watch.addChild(secondHandContainer)
         
         const minuteHandContainer = new PIXI.Container;
