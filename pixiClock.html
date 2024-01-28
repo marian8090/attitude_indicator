@@ -45,7 +45,7 @@
         const watch = new PIXI.Container();
         const watchFace = new PIXI.Graphics();
         watch.addChild(watchFace);
-        watchFace.lineStyle(2, 0xFFFFFF, 1); // watchFace refs line style
+        watchFace.lineStyle(2, 0x00FF00, 1); // watchFace refs line style
         for (hour = 0; hour <= 12; hour += 1) {
             watchFace.moveTo(clockX + ri*Math.sin(hour*30/180*Math.PI), clockY - ri*Math.cos(hour*30/180*Math.PI));
             watchFace.lineTo(clockX + ro*Math.sin(hour*30/180*Math.PI), clockY - ro*Math.cos(hour*30/180*Math.PI));
@@ -57,7 +57,7 @@
         secondHand.x = clockX;
         secondHand.y = clockY;
         //secondHand.beginFill(0xFFFFFF); // colour second hand
-        secondHand.lineStyle(4, 0xFFFFFF, 1 );
+        secondHand.lineStyle(4, 0x00FF00, 1 );
         secondHand.moveTo(0,0);
         secondHand.lineTo(0, -1.0 * ro);
         //secondHand.closePath();
@@ -68,7 +68,7 @@
         minuteHandContainer.addChild(minuteHand);
         minuteHand.x = clockX;
         minuteHand.y = clockY;
-        minuteHand.beginFill(0xFFFFFF); // colour second hand
+        minuteHand.beginFill(0x00FF00); // colour second hand
         minuteHand.moveTo(0,0);
         minuteHand.lineTo(10, -0.4 * ro);
         minuteHand.lineTo(0, -0.95 * ro);
@@ -83,7 +83,7 @@
         hourHandContainer.addChild(hourHand);
         hourHand.x = clockX;
         hourHand.y = clockY;
-        hourHand.beginFill(0xFFFFFF); // colour second hand
+        hourHand.beginFill(0x00FF00); // colour second hand
         hourHand.moveTo(0,0);
         hourHand.lineTo(20, -0.25 * ro);
         hourHand.lineTo(0, -0.5 * ro);
@@ -106,8 +106,8 @@
             currentSecond = currentTime.getSeconds();
 
             secondHand.rotation=currentSecond/30*Math.PI;
-            minuteHand.rotation=currentMinute/30*Math.PI;
-            hourHand.rotation=currentHour/6*Math.PI;
+            minuteHand.rotation=currentMinute/30*Math.PI + currentSecond/30*Math.PI/60;
+            hourHand.rotation=currentHour/6*Math.PI + currentMinute/30*Math.PI/12 + currentSecond/30*Math.PI/60/12;
             
             //console.log(currentHour);
         });
