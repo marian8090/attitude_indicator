@@ -1,36 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PixiJS Rotated Line Example</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/6.1.4/pixi.min.js"></script>
 </head>
+
 <body>
 
-<script>
-  // Create PixiJS application
-  const app = new PIXI.Application({
-    width: 800,
-    height: 600,
-    backgroundColor: 0xAAAAAA,
-  });
+  <script>
+    // Create a PIXI application
+    const app = new PIXI.Application({ width: 800, height: 600 });
+    document.body.appendChild(app.view);
 
-  // Add the Pixi canvas to the body
-  document.body.appendChild(app.view);
+    // Number of squares
+    const numSquares = 8;
+    const radius = 200; // Radius of the circular arrangement
+    const center = { x: app.renderer.width / 2, y: app.renderer.height / 2 }; // Center of the stage
 
-  // Create a Container to hold the line
-  const container = new PIXI.Container();
-  app.stage.addChild(container);
+    // Create an array to hold squares
+    const squares = [];
 
-  // Create a Graphics object for the line
-  const graphics = new PIXI.Graphics();
-  container.addChild(graphics);
+    // Create squares and position them on a circle
+    for (let i = 0; i < numSquares; i++) {
+      const square = PIXI.Sprite.from('path_to_your_square_image.png');
+      square.anchor.set(0.5); // Set anchor to the center
+      const angle = (Math.PI * 2 / numSquares) * i; // Calculate angle for each square
+      const x = center.x + Math.cos(angle) * radius;
+      const y = center.y + Math.sin(angle) * radius;
+      square.position.set(x, y);
+      square.rotation = angle; // Rotate the square to the corresponding angle
+      app.stage.addChild(square);
+      squares.push(square);
+    }
 
-  // Set line style
-  graphics.lineStyle({
-    width: 5,
-    color: 0xFF0000,
-    alpha: 1,
-    alignment: 0.5,
-  });
+    // Render the stage
+    app.renderer.render(app.stage);
+
+
+  </script>
+</body>
+
+</html>
