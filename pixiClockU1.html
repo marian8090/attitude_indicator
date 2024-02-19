@@ -193,7 +193,7 @@
             t = new Date(); // update current time
 
             dayText.text = t.getDate();
-            secondHand.rotation = (t.getSeconds() + t.getMilliseconds()/1000) / 30 * Math.PI ;    
+            secondHand.rotation = (t.getSeconds() + t.getMilliseconds()/1000) / 60 * 2 * Math.PI  +  1 * Math.PI;    
             minuteHand.rotation = (t.getMinutes() + t.getSeconds()/60 + t.getMilliseconds()/1000/60) / 30 * Math.PI ; 
             hourHand.rotation   = (t.getHours()   + t.getMinutes()/60 + t.getSeconds()/3600 + t.getMilliseconds()/3600000) * 30 / 180 * Math.PI ; 
             //hourHand.rotation = currentTime.getHours() / 6 * Math.PI + currentTime.getMinutes() / 30 * Math.PI / 12 + currentTime.getSeconds() / 30 * Math.PI / 60 / 12;
