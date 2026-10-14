@@ -75,9 +75,36 @@
       
         const yoke = yokeInput(app); // get yoke control input (yoke.js)
         
-        const pfdUpdate = pfdInit(app); // PFD initialisieren und PFD update funktion (per Lambdafunktion) zurueckliefern
+        // LAYOUT: instruments are drawn in fixed layout units, then the stage is scaled to fit the window.
+        // Portrait: PFD on top, HSI below. Landscape: PFD left, HSI right. Both layouts are 1120 x 580 or 600 x 1120 units.
+        function makeLayout(landscape) {
+            const pfd = { x: 0, y: 0, w: 600, h: 580 };
+            return landscape
+                ? { pfd, hsi: { x: 870, y: 300, size: 480 }, width: 1120, height: 580 }
+                : { pfd, hsi: { x: 300, y: 880, size: 480 }, width: 600, height: 1120 };
+        }
 
-        const hsiUpdate = hsiInit(app); // HSI initialisieren und HSI update funktion (per Lambdafunktion) zurueckliefern
+        var layout, pfdUpdate, hsiUpdate;
+
+        function buildInstruments() { // (re)build PFD + HSI for the current window orientation
+            layout = makeLayout(app.screen.width > app.screen.height);
+            app.stage.removeChildren().forEach(c => c.destroy({ children: true }));
+            pfdUpdate = pfdInit(app, layout.pfd); // PFD initialisieren und PFD update funktion (per Lambdafunktion) zurueckliefern
+            hsiUpdate = hsiInit(app, layout.hsi); // HSI initialisieren und HSI update funktion (per Lambdafunktion) zurueckliefern
+            fitStage();
+        }
+
+        function fitStage() { // scale + center the layout in the window
+            const s = Math.min(app.screen.width / layout.width, app.screen.height / layout.height);
+            app.stage.scale.set(s);
+            app.stage.position.set((app.screen.width - layout.width * s) / 2, (app.screen.height - layout.height * s) / 2);
+        }
+
+        buildInstruments();
+        app.renderer.on('resize', () => {
+            if ((app.screen.width > app.screen.height) !== (layout.width > layout.height)) buildInstruments();
+            else fitStage();
+        });
 
 
         var time = 0; // Simulationszeit

@@ -1,8 +1,8 @@
-function pfdInit(app) {
-    pfdWidth = 1.0*app.screen.width; // set PFD width
-    pfdHeight = 0.60*app.screen.width; // set PFD height
-    pfdPosX = 0.5*app.screen.width; // set PFD midpoint position X
-    pfdPosY = 0.14*app.screen.height; // set PFD midpoint position Y
+function pfdInit(app, box) { // box = {x, y, w, h}: PFD area (top-left + size) in layout units
+    pfdWidth = box.w; // set PFD width
+    pfdHeight = box.h; // set PFD height
+    pfdPosX = box.x + box.w/2; // set PFD midpoint position X
+    pfdPosY = box.y + box.h/2; // set PFD midpoint position Y
     const pxPerDegPitch = 10; // pixel horizon pitch per degree plane pitch
 
 
@@ -175,10 +175,11 @@ function pfdInit(app) {
         //fontWeight: "bold"
     });
     const airspeedText = new PIXI.Text('---', airspeedTextStyle);
-    airspeedText.x = pfdPosX - pfdWidth/2 + 50; airspeedText.y = pfdPosY - 20;
+    airspeedText.x = pfdPosX - pfdWidth/2 + 15; airspeedText.y = pfdPosY - 20; // left of the boresight bars
     pfd.addChild(airspeedText);     // add airspeedText to PFD container
     const altitudeText = new PIXI.Text('---', airspeedTextStyle);
-    altitudeText.x = pfdPosX + pfdWidth/2 - 150; altitudeText.y = pfdPosY - 20;
+    altitudeText.anchor.set(1, 0); // right-aligned, so 5-digit altitudes stay inside the PFD
+    altitudeText.x = pfdPosX + pfdWidth/2 - 10; altitudeText.y = pfdPosY - 20;
     pfd.addChild(altitudeText);     // add altitudeText to PFD container
     
     
