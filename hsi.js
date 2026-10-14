@@ -1,7 +1,7 @@
-function hsiInit(app) {
-    hsiSize = 0.60*app.screen.width; // set HSI size (= height = width)
-    hsiPosX = 0.5*app.screen.width; // set HSI midpoint position X
-    hsiPosY = 0.45*app.screen.height; // set HSI midpoint position Y
+function hsiInit(app, box) { // box = {x, y, size}: HSI midpoint + size in layout units
+    hsiSize = box.size; // set HSI size (= height = width)
+    hsiPosX = box.x; // set HSI midpoint position X
+    hsiPosY = box.y; // set HSI midpoint position Y
 
 
     var hsi = new PIXI.Container(); // PIXI HSI Container
